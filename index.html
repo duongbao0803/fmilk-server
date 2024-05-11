@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="" id="form">
+      Username
+      <input type="text" id="username" autofocus /><br /><br />
+      <span id="error" class="error"></span><br /><br />
+      Password
+      <input type="password" id="password" /> <br /><br />
+      <input type="submit" value="Submit" id="submit" disabled />
+    </form>
+  </body>
+
+  <script>
+    document.getElementById("form").addEventListener("input", (e) => {
+      var username = document.getElementById("username").value.trim();
+      var password = document.getElementById("password").value.trim();
+      var usernameInput = document.getElementById("username");
+      var passwordInput = document.getElementById("password");
+      var submit = document.getElementById("submit");
+      var error = document.getElementById("error");
+
+      if (username.toLowerCase() !== "admin") {
+        submit.disabled = true;
+
+        checkUsername(username, function (isValid) {
+          if (!isValid) {
+            usernameInput.focus();
+            usernameInput.setSelectionRange(0, usernameInput.value.length);
+            error.textContent = "Error";
+          }
+        });
+      } else {
+        submit.disabled = false;
+        error.textContent = "";
+        passwordInput.focus();
+      }
+    });
+
+    function checkUsername(username, callback) {
+      $.ajax({
+        type: "POST",
+        data: { username: username },
+        success: function (response) {
+          var isValid = response === "valid";
+          callback(isValid);
+        },
+        error: function () {
+          error.textContent = "Error";
+
+          callback(true);
+        },
+      });
+    }
+
+    document.getElementById("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      window.location.href = "index.html";
+    });
+  </script>
+</html>
