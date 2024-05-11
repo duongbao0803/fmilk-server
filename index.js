@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const authRoute = require("./routes/auth");
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,9 @@ mongoose
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
   });
+
+// ROUTES
+app.use("/v1/auth", authRoute);
 
 app.listen(8000, () => {
   console.log("Server is running");
