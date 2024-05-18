@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const middlewareController = {
   verifyToken: (req, res, next) => {
-    const token = req.headers.token;
+    const token = req.headers["authorization"];
     if (token) {
       const accesstoken = token.split(" ")[1];
       jwt.verify(accesstoken, process.env.ACCESS_TOKEN, (err, user) => {
@@ -25,7 +25,20 @@ const middlewareController = {
 
   verifyTokenAdmin: (req, res, next) => {
     middlewareController.verifyToken(req, res, () => {
-      if (req.user.id === req.params.id || req.user.admin) {
+      if (req.user.id === req.params.id || req.user.role === "ADMIN") {
+        next();
+      } else {
+        res.status(403).json({
+          message: "You do not allow to use this func",
+          status: 403,
+        });
+      }
+    });
+  },
+
+  verifyTokenStaff: (req, res, next) => {
+    middlewareController.verifyToken(req, res, () => {
+      if (req.user.id === req.params.id || req.user.role === "STAFF") {
         next();
       } else {
         res.status(403).json({

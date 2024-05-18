@@ -6,12 +6,54 @@ dotenv.config();
 
 let refreshTokens = [];
 const authController = {
+  getInfoUser: async (req, res) => {
+    try {
+      const user = req.user;
+      const info = await User.findById(user.id).select("username email role");
+      res.json({ info });
+    } catch (err) {
+      console.log("check err", err);
+      res.status(500), json(err);
+    }
+  },
+
   registerUser: async (req, res) => {
     try {
-      const existingUser = await User.findOne({ username: req.body.username });
-      if (existingUser) {
+      const existingUserByUsername = await User.findOne({
+        username: req.body.username,
+      });
+      const existingUserByEmail = await User.findOne({ email: req.body.email });
+
+      if (existingUserByUsername) {
         return res.status(400).json({
           message: "Username is duplicated",
+          status: 400,
+        });
+      }
+
+      if (existingUserByEmail) {
+        return res.status(400).json({
+          message: "Email is duplicated",
+          status: 400,
+        });
+      }
+
+      if (/[^a-z0-9]/.test(req.body.username)) {
+        return res.status(400).json({
+          message:
+            "Username cannot contain special characters or uppercase letters",
+          status: 400,
+        });
+      }
+
+      if (
+        req.body.username.length < 8 ||
+        req.body.name.length < 8 ||
+        req.body.password.length < 8
+      ) {
+        return res.status(400).json({
+          message:
+            "Username, name, and password must be at least 8 characters long",
           status: 400,
         });
       }
@@ -21,6 +63,7 @@ const authController = {
 
       const newUser = new User({
         username: req.body.username,
+        name: req.body.name,
         email: req.body.email,
         password: hashed,
       });
@@ -68,6 +111,8 @@ const authController = {
         req.body.password,
         user.password
       );
+      console.log("check validPassword", validPassword);
+
       if (!validPassword) {
         return res.status(404).json({
           message: "Username or password is invalid",
@@ -92,7 +137,7 @@ const authController = {
         });
       }
     } catch (err) {
-      console.log("err", err);
+      console.log("500", err);
       return res.status(500).json(err);
     }
   },
