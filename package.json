@@ -2,9 +2,6 @@
   "name": "stem-portal",
   "version": "1.0.0",
   "main": "index.js",
-  "engines": {
-    "node": "18.x"
-  },
   "license": "MIT",
   "scripts": {
     "dev": "node index.js"
