@@ -3,14 +3,19 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
 const authRoute = require("./routes/auth");
 
 dotenv.config();
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+app.use(morgan("dev"));
 
 mongoose
   .connect(process.env.MONGODB_URL)

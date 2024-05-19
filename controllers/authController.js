@@ -82,7 +82,7 @@ const authController = {
         role: user.role,
       },
       process.env.ACCESS_TOKEN,
-      { expiresIn: "7d" }
+      { expiresIn: 900 }
     );
   },
 
@@ -93,7 +93,7 @@ const authController = {
         role: user.role,
       },
       process.env.REFRESH_TOKEN,
-      { expiresIn: "20d" }
+      { expiresIn: "10d" }
     );
   },
 
@@ -111,7 +111,6 @@ const authController = {
         req.body.password,
         user.password
       );
-      console.log("check validPassword", validPassword);
 
       if (!validPassword) {
         return res.status(404).json({
@@ -124,16 +123,12 @@ const authController = {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
         refreshTokens.push(refreshToken);
-        res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          secure: false,
-          path: "/",
-          sameSite: "strict",
-        });
+
         return res.status(200).json({
           message: "Login Successful",
           status: 200,
           accessToken,
+          refreshToken,
         });
       }
     } catch (err) {
@@ -143,7 +138,7 @@ const authController = {
   },
 
   requestRefreshToken: async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.body.refreshToken;
     if (!refreshToken) {
       return res.status(401).json({
         message: "Refresh Token is not valid",
@@ -157,16 +152,13 @@ const authController = {
       });
     }
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
-      refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+      if (err) {
+        return res.status(403).json({
+          message: "Refresh Token is not valid",
+          status: 403,
+        });
+      }
       const newAccessToken = authController.generateAccessToken(user);
-      const newRefreshToken = authController.generateRefreshToken(user);
-      refreshTokens.push(newRefreshToken);
-      res.cookie("refreshToken", newRefreshToken, {
-        httpOnly: true,
-        secure: false,
-        path: "/",
-        sameSite: "strict",
-      });
       return res.status(200).json({ accessToken: newAccessToken });
     });
   },
