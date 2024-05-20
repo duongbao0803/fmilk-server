@@ -25,13 +25,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 8,
     },
-    status: {
+    isActive: {
       type: Boolean,
       default: true,
     },
     role: {
       type: String,
-      default: "USER",
+      default: "MEMBER",
     },
   },
   { timestamps: true }
