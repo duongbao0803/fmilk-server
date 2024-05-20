@@ -29,7 +29,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You do not allow to use this func",
+          message: "You don't have permission",
           status: 403,
         });
       }
@@ -42,7 +42,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You do not allow to use this func",
+          message: "You don't have permission",
           status: 403,
         });
       }

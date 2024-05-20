@@ -25,12 +25,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
       minlength: 8,
     },
-    isActive: {
+    status: {
       type: Boolean,
       default: true,
     },

@@ -81,6 +81,7 @@ const authController = {
         name: req.body.name,
         phone: req.body.phone,
         email: req.body.email,
+        address: req.body.address,
         password: hashed,
       });
 
