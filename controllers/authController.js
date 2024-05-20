@@ -23,10 +23,18 @@ const authController = {
         username: req.body.username,
       });
       const existingUserByEmail = await User.findOne({ email: req.body.email });
+      const existingUserByPhone = await User.findOne({ phone: req.body.phone });
 
       if (existingUserByUsername) {
         return res.status(400).json({
           message: "Username is duplicated",
+          status: 400,
+        });
+      }
+
+      if (existingUserByPhone) {
+        return res.status(400).json({
+          message: "Phone number is duplicated",
           status: 400,
         });
       }
@@ -42,6 +50,13 @@ const authController = {
         return res.status(400).json({
           message:
             "Username cannot contain special characters or uppercase letters",
+          status: 400,
+        });
+      }
+
+      if (req.body.phone.length !== 10) {
+        return res.status(400).json({
+          message: "Phone number must be 10 digits",
           status: 400,
         });
       }
@@ -64,6 +79,7 @@ const authController = {
       const newUser = new User({
         username: req.body.username,
         name: req.body.name,
+        phone: req.body.phone,
         email: req.body.email,
         password: hashed,
       });
@@ -104,6 +120,13 @@ const authController = {
         return res.status(404).json({
           message: "Username or password is invalid",
           status: 404,
+        });
+      }
+
+      if (!user.status) {
+        return res.status(403).json({
+          message: "Account is not active",
+          status: 403,
         });
       }
 
