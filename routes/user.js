@@ -25,7 +25,7 @@ router.put("/:id", middlewareController.verifyToken, userController.updateUser);
 
 router.patch(
   "/status/:id",
-  middlewareController.verifyToken,
+  middlewareController.verifyTokenAdmin,
   userController.updateStatusUser
 );
 
