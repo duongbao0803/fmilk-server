@@ -7,9 +7,11 @@ const middlewareController = {
       const accesstoken = token.split(" ")[1];
       jwt.verify(accesstoken, process.env.ACCESS_TOKEN, (err, user) => {
         if (err) {
+          console.log("check err", err);
           return res.status(403).json({
             message: "Token is not valid",
             status: 403,
+            errorType: "invalid_token",
           });
         }
         req.user = user;
@@ -29,7 +31,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You do not allow to use this func",
+          message: "You don't have permission",
           status: 403,
         });
       }
@@ -42,7 +44,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You do not allow to use this func",
+          message: "You don't have permission",
           status: 403,
         });
       }
