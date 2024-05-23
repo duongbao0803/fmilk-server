@@ -81,6 +81,8 @@ const authController = {
         name: req.body.name,
         phone: req.body.phone,
         email: req.body.email,
+        role: req.body.role,
+        address: req.body.address,
         password: hashed,
       });
 
@@ -98,7 +100,7 @@ const authController = {
         role: user.role,
       },
       process.env.ACCESS_TOKEN,
-      { expiresIn: 900 }
+      { expiresIn: 50 }
     );
   },
 
@@ -162,25 +164,33 @@ const authController = {
 
   requestRefreshToken: async (req, res) => {
     const refreshToken = req.body.refreshToken;
+    console.log("check ref", refreshToken);
+    console.log("check ref array", refreshTokens);
+
     if (!refreshToken) {
       return res.status(401).json({
         message: "Refresh Token is not valid",
         status: 401,
       });
     }
+
     if (!refreshTokens.includes(refreshToken)) {
       return res.status(403).json({
         message: "Refresh Token is not valid",
         status: 403,
+        errorType: "invalid_token",
       });
     }
+
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
       if (err) {
         return res.status(403).json({
           message: "Refresh Token is not valid",
           status: 403,
+          errorType: "invalid_token",
         });
       }
+
       const newAccessToken = authController.generateAccessToken(user);
       return res.status(200).json({ accessToken: newAccessToken });
     });
