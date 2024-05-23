@@ -103,7 +103,7 @@ const userController = {
     const newDob = req.body.dob;
     const myRole = req.user.role;
     const targetUser = await User.findById(id);
-    const existingPhone = await User.findOne({ phone: newPhone });
+    const existingPhoneUser = await User.findOne({ phone: newPhone });
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -127,7 +127,7 @@ const userController = {
         });
       }
 
-      if (existingPhone) {
+      if (existingPhoneUser && existingPhoneUser.id !== id) {
         return res.status(400).json({
           message: "Phone number is existed",
           status: 400,
@@ -141,14 +141,10 @@ const userController = {
         });
       }
 
-      if (myRole === "MEMBER" && targetUser.role !== "MEMBER") {
-        return res.status(403).json({
-          message: "You don't have permission",
-          status: 403,
-        });
-      }
-
-      if (myRole === "STAFF" && targetUser.role !== "STAFF") {
+      if (
+        (myRole === "MEMBER" && targetUser.role !== "MEMBER") ||
+        (myRole === "STAFF" && targetUser.role !== "STAFF")
+      ) {
         return res.status(403).json({
           message: "You don't have permission",
           status: 403,
