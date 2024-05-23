@@ -8,6 +8,13 @@ router.get(
   middlewareController.verifyTokenAdmin,
   userController.getAllUser
 );
+
+router.get(
+  "/:id",
+  middlewareController.verifyToken,
+  userController.getDetailUser
+);
+
 router.delete(
   "/:id",
   middlewareController.verifyTokenAdmin,
@@ -15,5 +22,11 @@ router.delete(
 );
 
 router.put("/:id", middlewareController.verifyToken, userController.updateUser);
+
+router.patch(
+  "/status/:id",
+  middlewareController.verifyToken,
+  userController.updateStatusUser
+);
 
 module.exports = router;

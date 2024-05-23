@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    dob: {
+      type: Date,
+      default: "",
+    },
     email: {
       type: String,
       required: true,
