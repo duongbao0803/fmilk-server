@@ -12,7 +12,6 @@ const authController = {
       const info = await User.findById(user.id).select("username email role");
       res.json({ info });
     } catch (err) {
-      console.log("check err", err);
       res.status(500), json(err);
     }
   },
