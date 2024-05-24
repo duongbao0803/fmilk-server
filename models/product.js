@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    type: {
+    typeOfProduct: {
       type: String,
       required: true,
     },
