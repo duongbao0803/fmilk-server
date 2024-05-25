@@ -127,12 +127,22 @@ const productController = {
   updateProduct: async (req, res) => {
     const { name, image, description, quantity, typeOfProduct, price, rating } =
       req.body;
-    const existingProduct = await Product.findOne({ name });
+    const existingProduct = await Product.findOne({
+      name,
+      _id: { $ne: req.params.id },
+    }).collation({ locale: "en", strength: 2 });
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
           message: "Invalid product ID",
+          status: 400,
+        });
+      }
+
+      if (existingProduct) {
+        return res.status(400).json({
+          message: "Product is existed",
           status: 400,
         });
       }
@@ -148,13 +158,6 @@ const productController = {
       ) {
         return res.status(400).json({
           message: "Input must be required",
-          status: 400,
-        });
-      }
-
-      if (existingProduct) {
-        return res.status(400).json({
-          message: "Product is existed",
           status: 400,
         });
       }
