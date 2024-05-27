@@ -49,8 +49,15 @@ const productController = {
 
   addProduct: async (req, res) => {
     try {
-      const { name, image, description, quantity, type, price, rating } =
-        req.body;
+      const {
+        name,
+        image,
+        description,
+        quantity,
+        typeOfProduct,
+        price,
+        rating,
+      } = req.body;
 
       const existingProduct = await Product.findOne({ name });
 
@@ -78,7 +85,7 @@ const productController = {
         image,
         description,
         quantity,
-        type,
+        typeOfProduct,
         price,
         rating,
       });
@@ -118,9 +125,12 @@ const productController = {
   },
 
   updateProduct: async (req, res) => {
-    const { name, image, description, quantity, type, price, rating } =
+    const { name, image, description, quantity, typeOfProduct, price, rating } =
       req.body;
-    const existingProduct = await Product.findOne({ name });
+    const existingProduct = await Product.findOne({
+      name,
+      _id: { $ne: req.params.id },
+    }).collation({ locale: "en", strength: 2 });
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -130,24 +140,24 @@ const productController = {
         });
       }
 
+      if (existingProduct) {
+        return res.status(400).json({
+          message: "Product is existed",
+          status: 400,
+        });
+      }
+
       if (
         !name ||
         !image ||
         !description ||
         !quantity ||
-        !type ||
+        !typeOfProduct ||
         !price ||
         !rating
       ) {
         return res.status(400).json({
           message: "Input must be required",
-          status: 400,
-        });
-      }
-
-      if (existingProduct) {
-        return res.status(400).json({
-          message: "Product is existed",
           status: 400,
         });
       }
@@ -171,7 +181,7 @@ const productController = {
           image,
           description,
           quantity,
-          type,
+          typeOfProduct,
           price,
           rating,
         },

@@ -38,9 +38,13 @@ const middlewareController = {
     });
   },
 
-  verifyTokenStaff: (req, res, next) => {
+  verifyAuthorityPermission: (req, res, next) => {
     middlewareController.verifyToken(req, res, () => {
-      if (req.user.id === req.params.id || req.user.role === "STAFF") {
+      if (
+        req.user.id === req.params.id ||
+        req.user.role === "ADMIN" ||
+        req.user.role === "STAFF"
+      ) {
         next();
       } else {
         res.status(403).json({
