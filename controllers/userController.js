@@ -63,7 +63,7 @@ const userController = {
       const loggedInUserId = req.user.id;
       if (req.params.id === loggedInUserId.toString()) {
         return res.status(403).json({
-          message: "You cannot disable yourself",
+          message: "You cannot delete yourself",
           status: 403,
         });
       }
@@ -77,19 +77,17 @@ const userController = {
       }
 
       if (user.status === false) {
-        return res.status(404).json({
-          message: "Account is already deleted",
-          status: 404,
+        await User.findByIdAndDelete(req.params.id);
+        return res.status(200).json({
+          message: "Delete Successful",
+          status: 200,
+        });
+      } else {
+        return res.status(400).json({
+          message: "Cannot delete user before inactive",
+          status: 400,
         });
       }
-
-      user.status = false;
-      await user.save();
-
-      return res.status(200).json({
-        message: "Delete Successful",
-        status: 200,
-      });
     } catch (err) {
       return res.status(500).json(err);
     }
