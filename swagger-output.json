@@ -308,7 +308,7 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "example": "any"
+                  "example": true
                 }
               }
             }
