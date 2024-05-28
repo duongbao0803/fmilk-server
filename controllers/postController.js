@@ -32,6 +32,7 @@ const postController = {
           status: 400,
         });
       }
+
       const postInfo = await Post.findById(req.params.id);
       if (!postInfo) {
         return res.status(404).json({
@@ -42,7 +43,6 @@ const postController = {
 
       res.status(200).json({ postInfo });
     } catch (err) {
-      console.log("check err", err);
       res.status(500).json(err);
     }
   },
@@ -140,7 +140,6 @@ const postController = {
         });
       }
     } catch (err) {
-      console.log("check err", err);
       return res.status(500).json(err);
     }
   },

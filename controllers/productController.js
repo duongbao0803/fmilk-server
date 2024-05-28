@@ -93,7 +93,6 @@ const productController = {
       const product = await newProduct.save();
       return res.status(200).json(product);
     } catch (err) {
-      console.log("check err", err);
       return res.status(500).json(err);
     }
   },

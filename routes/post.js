@@ -4,13 +4,9 @@ const middlewareController = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 
-router.get("/", middlewareController.verifyToken, postController.getAllPost);
+router.get("/", postController.getAllPost);
 
-router.get(
-  "/:id",
-  middlewareController.verifyToken,
-  postController.getDetailPost
-);
+router.get("/:id", postController.getDetailPost);
 
 router.post(
   "/create",

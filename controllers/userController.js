@@ -97,13 +97,10 @@ const userController = {
 
   updateUser: async (req, res) => {
     const id = req.params.id;
-    const newPhone = req.body.phone;
-    const newName = req.body.name;
-    const newAddress = req.body.address;
-    const newDob = req.body.dob;
+    const { name, phone, address, dob } = req.body;
     const myRole = req.user.role;
     const targetUser = await User.findById(id);
-    const existingPhoneUser = await User.findOne({ phone: newPhone });
+    const existingPhoneUser = await User.findOne({ phone });
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -113,14 +110,14 @@ const userController = {
         });
       }
 
-      if (!newName || !newPhone || !newAddress) {
+      if (!name || !phone || !address) {
         return res.status(400).json({
           message: "Name, phone and address must be required",
           status: 400,
         });
       }
 
-      if (newName.length < 8) {
+      if (name.length < 8) {
         return res.status(400).json({
           message: "Name must be at least 8 characters long",
           status: 400,
@@ -134,7 +131,7 @@ const userController = {
         });
       }
 
-      if (newPhone.length !== 10) {
+      if (phone.length !== 10) {
         return res.status(400).json({
           message: "Phone number must be 10 digits",
           status: 400,
@@ -154,10 +151,10 @@ const userController = {
       const user = await User.findByIdAndUpdate(
         id,
         {
-          name: newName,
-          phone: newPhone,
-          address: newAddress,
-          dob: newDob,
+          name,
+          phone,
+          address,
+          dob,
         },
         { new: true }
       );

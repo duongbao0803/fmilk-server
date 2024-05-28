@@ -18,11 +18,13 @@ const authController = {
 
   registerUser: async (req, res) => {
     try {
+      const { username, email, phone, password, name, role, address } =
+        req.body;
       const existingUserByUsername = await User.findOne({
-        username: req.body.username,
+        username,
       });
-      const existingUserByEmail = await User.findOne({ email: req.body.email });
-      const existingUserByPhone = await User.findOne({ phone: req.body.phone });
+      const existingUserByEmail = await User.findOne({ email });
+      const existingUserByPhone = await User.findOne({ phone });
 
       if (existingUserByUsername) {
         return res.status(400).json({
@@ -45,7 +47,7 @@ const authController = {
         });
       }
 
-      if (/[^a-z0-9]/.test(req.body.username)) {
+      if (/[^a-z0-9]/.test(username)) {
         return res.status(400).json({
           message:
             "Username cannot contain special characters or uppercase letters",
@@ -53,18 +55,14 @@ const authController = {
         });
       }
 
-      if (req.body.phone.length !== 10) {
+      if (phone.length !== 10) {
         return res.status(400).json({
           message: "Phone number must be 10 digits",
           status: 400,
         });
       }
 
-      if (
-        req.body.username.length < 8 ||
-        req.body.name.length < 8 ||
-        req.body.password.length < 8
-      ) {
+      if (username.length < 8 || name.length < 8 || password.length < 8) {
         return res.status(400).json({
           message:
             "Username, name, and password must be at least 8 characters long",
@@ -73,15 +71,15 @@ const authController = {
       }
 
       const salt = await bcrypt.genSalt(10);
-      const hashed = await bcrypt.hash(req.body.password, salt);
+      const hashed = await bcrypt.hash(password, salt);
 
       const newUser = new User({
-        username: req.body.username,
-        name: req.body.name,
-        phone: req.body.phone,
-        email: req.body.email,
-        role: req.body.role,
-        address: req.body.address,
+        username,
+        name,
+        phone,
+        email,
+        role,
+        address,
         password: hashed,
       });
 
@@ -99,7 +97,7 @@ const authController = {
         role: user.role,
       },
       process.env.ACCESS_TOKEN,
-      { expiresIn: 900 }
+      { expiresIn: 60 }
     );
   },
 
@@ -116,8 +114,18 @@ const authController = {
 
   loginUser: async (req, res) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
+      const { username, password } = req.body;
+      const user = await User.findOne({ username });
       if (!user) {
+        return res.status(404).json({
+          message: "Username or password is invalid",
+          status: 404,
+        });
+      }
+
+      const validPassword = await bcrypt.compare(password, user.password);
+
+      if (!validPassword) {
         return res.status(404).json({
           message: "Username or password is invalid",
           status: 404,
@@ -128,18 +136,6 @@ const authController = {
         return res.status(403).json({
           message: "Account is not active",
           status: 403,
-        });
-      }
-
-      const validPassword = await bcrypt.compare(
-        req.body.password,
-        user.password
-      );
-
-      if (!validPassword) {
-        return res.status(404).json({
-          message: "Username or password is invalid",
-          status: 404,
         });
       }
 
@@ -162,9 +158,7 @@ const authController = {
   },
 
   requestRefreshToken: async (req, res) => {
-    const refreshToken = req.body.refreshToken;
-    console.log("check ref", refreshToken);
-    console.log("check ref array", refreshTokens);
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
       return res.status(401).json({
@@ -174,19 +168,17 @@ const authController = {
     }
 
     if (!refreshTokens.includes(refreshToken)) {
-      return res.status(403).json({
+      return res.status(401).json({
         message: "Refresh Token is not valid",
-        status: 403,
-        errorType: "invalid_token",
+        status: 401,
       });
     }
 
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
       if (err) {
-        return res.status(403).json({
+        return res.status(401).json({
           message: "Refresh Token is not valid",
-          status: 403,
-          errorType: "invalid_token",
+          status: 401,
         });
       }
 
