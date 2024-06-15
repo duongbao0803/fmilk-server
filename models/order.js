@@ -33,7 +33,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     transferAddress: {
-      name: {
+      fullName: {
         type: String,
         required: true,
       },
@@ -42,7 +42,7 @@ const orderSchema = new mongoose.Schema(
         required: true,
       },
       phone: {
-        type: Number,
+        type: String,
         required: true,
       },
     },
@@ -55,10 +55,6 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     transferPrice: {
-      type: Number,
-      required: true,
-    },
-    taxPrice: {
       type: Number,
       required: true,
     },

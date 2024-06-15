@@ -66,6 +66,19 @@ const middlewareController = {
       }
     });
   },
+
+  verifyTokenCustomer: (req, res, next) => {
+    middlewareController.verifyToken(req, res, () => {
+      if (req.user.id === req.params.id || req.user.role === "MEMBER") {
+        next();
+      } else {
+        res.status(403).json({
+          message: "You don't have permission",
+          status: 403,
+        });
+      }
+    });
+  },
 };
 
 module.exports = middlewareController;

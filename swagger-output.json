@@ -7,6 +7,9 @@
   },
   "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
+  "schemes": [
+    "http"
+  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -34,7 +37,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -85,7 +88,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           }
         }
       }
@@ -118,7 +121,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -182,10 +185,13 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -209,7 +215,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -237,7 +243,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -257,6 +263,11 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           },
           {
@@ -286,7 +297,10 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -314,7 +328,7 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "example": true
+                  "example": "any"
                 }
               }
             }
@@ -325,7 +339,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -359,7 +373,10 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -383,7 +400,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -408,7 +425,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -456,9 +473,6 @@
                 },
                 "rating": {
                   "example": "any"
-                },
-                "expireDate": {
-                  "example": "any"
                 }
               }
             }
@@ -469,7 +483,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -493,25 +507,16 @@
                 "name": {
                   "example": "any"
                 },
-                "image": {
-                  "example": "any"
-                },
-                "description": {
+                "expireDate": {
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
-                },
-                "typeOfProduct": {
                   "example": "any"
                 },
                 "price": {
                   "example": "any"
                 },
                 "rating": {
-                  "example": "any"
-                },
-                "expireDate": {
                   "example": "any"
                 }
               }
@@ -523,7 +528,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -554,7 +559,10 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -578,7 +586,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -621,7 +629,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -646,7 +654,7 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -688,7 +696,58 @@
             "description": "OK"
           },
           "400": {
-            "description": "Internal Server Error"
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/order/create": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "transferAddress": {
+                  "example": "any"
+                },
+                "orderProducts": {
+                  "example": "any"
+                },
+                "user": {
+                  "example": "any"
+                },
+                "paymentMethod": {
+                  "example": "any"
+                },
+                "itemsPrice": {
+                  "example": "any"
+                },
+                "transferPrice": {
+                  "example": "any"
+                },
+                "totalPrice": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -845,7 +904,6 @@
         "paymentMethod",
         "itemsPrice",
         "transferPrice",
-        "taxPrice",
         "totalPrice"
       ],
       "properties": {
@@ -885,14 +943,14 @@
         "transferAddress": {
           "type": "object",
           "properties": {
-            "name": {
+            "fullName": {
               "type": "string"
             },
             "address": {
               "type": "string"
             },
             "phone": {
-              "type": "number"
+              "type": "string"
             }
           }
         },
@@ -903,9 +961,6 @@
           "type": "number"
         },
         "transferPrice": {
-          "type": "number"
-        },
-        "taxPrice": {
           "type": "number"
         },
         "totalPrice": {
