@@ -9,14 +9,14 @@ const userController = {
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
-      if (isNaN(page) || page <= 0) {
+      if (page <= 0) {
         return res.status(400).json({
           message: "Page number must be a positive integer",
           status: 400,
         });
       }
 
-      if (isNaN(pageSize) || pageSize <= 0) {
+      if (pageSize <= 0) {
         return res.status(400).json({
           message: "Page size must be a positive integer",
           status: 400,
