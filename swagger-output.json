@@ -169,12 +169,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -346,12 +346,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -541,12 +541,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
