@@ -8,8 +8,22 @@ const productController = {
       let { page, pageSize } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
-      const skip = (page - 1) * pageSize;
 
+      if (isNaN(page) || page <= 0) {
+        return res.status(400).json({
+          message: "Page number must be a positive integer",
+          status: 400,
+        });
+      }
+
+      if (isNaN(pageSize) || pageSize <= 0) {
+        return res.status(400).json({
+          message: "Page size must be a positive integer",
+          status: 400,
+        });
+      }
+
+      const skip = (page - 1) * pageSize;
       const products = await Product.find().skip(skip).limit(pageSize);
       const totalCount = await Product.countDocuments();
 

@@ -11,14 +11,14 @@ const userController = {
 
       if (isNaN(page) || page <= 0) {
         return res.status(400).json({
-          message: "Invalid page number, it must be a positive integer",
+          message: "Page number must be a positive integer",
           status: 400,
         });
       }
 
       if (isNaN(pageSize) || pageSize <= 0) {
         return res.status(400).json({
-          message: "Invalid page size, it must be a positive integer",
+          message: "Page size must be a positive integer",
           status: 400,
         });
       }
