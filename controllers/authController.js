@@ -12,7 +12,7 @@ const authController = {
       const info = await User.findById(user.id).select("username email role");
       res.json({ info });
     } catch (err) {
-      res.status(500), json(err);
+      res.status(400), json(err);
     }
   },
 
@@ -86,7 +86,7 @@ const authController = {
       const user = await newUser.save();
       return res.status(200).json(user);
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -152,8 +152,8 @@ const authController = {
         });
       }
     } catch (err) {
-      console.log("500", err);
-      return res.status(500).json(err);
+      console.log("400", err);
+      return res.status(400).json(err);
     }
   },
 

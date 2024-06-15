@@ -13,6 +13,13 @@ const postController = {
       const posts = await Post.find().skip(skip).limit(pageSize);
       const totalCount = await Post.countDocuments();
 
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "Post not found",
+          status: 404,
+        });
+      }
+
       return res.status(200).json({
         posts,
         currentPage: page,
@@ -20,7 +27,7 @@ const postController = {
         totalPosts: totalCount,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -43,7 +50,7 @@ const postController = {
 
       res.status(200).json({ postInfo });
     } catch (err) {
-      res.status(500).json(err);
+      res.status(400).json(err);
     }
   },
 
@@ -71,7 +78,7 @@ const postController = {
         post,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -97,7 +104,7 @@ const postController = {
         status: 200,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -140,7 +147,7 @@ const postController = {
         });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 };
