@@ -13,6 +13,13 @@ const postController = {
       const posts = await Post.find().skip(skip).limit(pageSize);
       const totalCount = await Post.countDocuments();
 
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "Post not found",
+          status: 404,
+        });
+      }
+
       return res.status(200).json({
         posts,
         currentPage: page,

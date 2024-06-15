@@ -32,8 +32,24 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    expireDate: {
+      type: Date,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["AVAILABLE", "EXPIRE"],
+      default: "AVAILABLE",
+    },
   },
   { timestamps: true }
 );
+
+productSchema.pre("save", function (next) {
+  if (this.expireDate < new Date()) {
+    this.status = "EXPIRE";
+  }
+  next();
+});
 
 module.exports = mongoose.model("product", productSchema);

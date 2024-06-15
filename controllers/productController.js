@@ -13,6 +13,13 @@ const productController = {
       const products = await Product.find().skip(skip).limit(pageSize);
       const totalCount = await Product.countDocuments();
 
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "Product not found",
+          status: 404,
+        });
+      }
+
       return res.status(200).json({
         products,
         currentPage: page,
@@ -53,8 +60,9 @@ const productController = {
         name,
         image,
         description,
-        quantity,
         typeOfProduct,
+        expireDate,
+        quantity,
         price,
         rating,
       } = req.body;
@@ -80,16 +88,7 @@ const productController = {
         });
       }
 
-      const newProduct = new Product({
-        name,
-        image,
-        description,
-        quantity,
-        typeOfProduct,
-        price,
-        rating,
-      });
-
+      const newProduct = new Product(req.body);
       const product = await newProduct.save();
       return res.status(200).json(product);
     } catch (err) {

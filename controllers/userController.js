@@ -16,6 +16,13 @@ const userController = {
         .limit(pageSize);
       const totalCount = await User.countDocuments();
 
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "User not found",
+          status: 404,
+        });
+      }
+
       return res.status(200).json({
         users,
         currentPage: page,
