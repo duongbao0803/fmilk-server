@@ -27,7 +27,7 @@ const postController = {
         totalPosts: totalCount,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -50,7 +50,7 @@ const postController = {
 
       res.status(200).json({ postInfo });
     } catch (err) {
-      res.status(500).json(err);
+      res.status(400).json(err);
     }
   },
 
@@ -78,7 +78,7 @@ const postController = {
         post,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -104,7 +104,7 @@ const postController = {
         status: 200,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -147,7 +147,7 @@ const postController = {
         });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 };

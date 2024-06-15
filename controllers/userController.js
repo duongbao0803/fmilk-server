@@ -8,6 +8,21 @@ const userController = {
       let { page, pageSize } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
+
+      if (isNaN(page) || page <= 0) {
+        return res.status(400).json({
+          message: "Invalid page number, it must be a positive integer",
+          status: 400,
+        });
+      }
+
+      if (isNaN(pageSize) || pageSize <= 0) {
+        return res.status(400).json({
+          message: "Invalid page size, it must be a positive integer",
+          status: 400,
+        });
+      }
+
       const skip = (page - 1) * pageSize;
 
       const users = await User.find()
@@ -30,7 +45,7 @@ const userController = {
         totalUsers: totalCount,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -54,7 +69,7 @@ const userController = {
 
       res.status(200).json({ userInfo });
     } catch (err) {
-      res.status(500).json(err);
+      res.status(400).json(err);
     }
   },
 
@@ -96,7 +111,7 @@ const userController = {
         });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -175,7 +190,7 @@ const userController = {
         });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -216,7 +231,7 @@ const userController = {
         status: 200,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 };
