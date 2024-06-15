@@ -7,9 +7,6 @@
   },
   "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
-  "schemes": [
-    "http"
-  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
