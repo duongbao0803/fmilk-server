@@ -8,6 +8,21 @@ const userController = {
       let { page, pageSize } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
+
+      if (page <= 0) {
+        return res.status(400).json({
+          message: "Page number must be a positive integer",
+          status: 400,
+        });
+      }
+
+      if (pageSize <= 0) {
+        return res.status(400).json({
+          message: "Page size must be a positive integer",
+          status: 400,
+        });
+      }
+
       const skip = (page - 1) * pageSize;
 
       const users = await User.find()
@@ -16,6 +31,13 @@ const userController = {
         .limit(pageSize);
       const totalCount = await User.countDocuments();
 
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "User not found",
+          status: 404,
+        });
+      }
+
       return res.status(200).json({
         users,
         currentPage: page,
@@ -23,7 +45,7 @@ const userController = {
         totalUsers: totalCount,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -47,7 +69,7 @@ const userController = {
 
       res.status(200).json({ userInfo });
     } catch (err) {
-      res.status(500).json(err);
+      res.status(400).json(err);
     }
   },
 
@@ -63,7 +85,7 @@ const userController = {
       const loggedInUserId = req.user.id;
       if (req.params.id === loggedInUserId.toString()) {
         return res.status(403).json({
-          message: "You cannot disable yourself",
+          message: "You cannot delete yourself",
           status: 403,
         });
       }
@@ -77,21 +99,19 @@ const userController = {
       }
 
       if (user.status === false) {
-        return res.status(404).json({
-          message: "Account is already deleted",
-          status: 404,
+        await User.findByIdAndDelete(req.params.id);
+        return res.status(200).json({
+          message: "Delete Successful",
+          status: 200,
+        });
+      } else {
+        return res.status(400).json({
+          message: "Cannot delete user before inactive",
+          status: 400,
         });
       }
-
-      user.status = false;
-      await user.save();
-
-      return res.status(200).json({
-        message: "Delete Successful",
-        status: 200,
-      });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -170,7 +190,7 @@ const userController = {
         });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -211,7 +231,7 @@ const userController = {
         status: 200,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 };

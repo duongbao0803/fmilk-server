@@ -21,6 +21,8 @@
     "morgan": "^1.10.0",
     "redis": "^4.6.14",
     "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
-  }
+  },
+  "devDependencies": {}
 }

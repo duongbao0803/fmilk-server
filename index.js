@@ -11,8 +11,8 @@ const swaggerDocument = require("./swagger-output.json");
 
 dotenv.config();
 const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
