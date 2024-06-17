@@ -1,24 +1,29 @@
-const productController = require("../controllers/productController");
+const authController = require("../controllers/authController");
+const postController = require("../controllers/postController");
 const middlewareController = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 
-router.get("/", productController.getAllProduct);
-router.get("/:id", productController.getDetailProduct);
+router.get("/", postController.getAllPost);
+
+router.get("/:id", postController.getDetailPost);
+
 router.post(
   "/create",
   middlewareController.verifyAuthorityPermission,
-  productController.addProduct
+  postController.addPost
 );
-router.delete(
-  "/:id",
-  middlewareController.verifyAuthorityPermission,
-  productController.deleteProduct
-);
+
 router.put(
   "/:id",
   middlewareController.verifyAuthorityPermission,
-  productController.updateProduct
+  postController.updatePost
+);
+
+router.delete(
+  "/:id",
+  middlewareController.verifyAuthorityPermission,
+  postController.deletePost
 );
 
 module.exports = router;

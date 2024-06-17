@@ -11,7 +11,7 @@ router.get(
 
 router.get(
   "/:id",
-  middlewareController.verifyToken,
+  middlewareController.verifyTokenAdmin,
   userController.getDetailUser
 );
 

@@ -8,6 +8,21 @@ const userController = {
       let { page, pageSize } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
+
+      if (page <= 0) {
+        return res.status(400).json({
+          message: "Page number must be a positive integer",
+          status: 400,
+        });
+      }
+
+      if (pageSize <= 0) {
+        return res.status(400).json({
+          message: "Page size must be a positive integer",
+          status: 400,
+        });
+      }
+
       const skip = (page - 1) * pageSize;
 
       const users = await User.find()
@@ -16,6 +31,13 @@ const userController = {
         .limit(pageSize);
       const totalCount = await User.countDocuments();
 
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "User not found",
+          status: 404,
+        });
+      }
+
       return res.status(200).json({
         users,
         currentPage: page,
@@ -23,7 +45,7 @@ const userController = {
         totalUsers: totalCount,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -47,7 +69,7 @@ const userController = {
 
       res.status(200).json({ userInfo });
     } catch (err) {
-      res.status(500).json(err);
+      res.status(400).json(err);
     }
   },
 
@@ -63,7 +85,7 @@ const userController = {
       const loggedInUserId = req.user.id;
       if (req.params.id === loggedInUserId.toString()) {
         return res.status(403).json({
-          message: "You cannot disable yourself",
+          message: "You cannot delete yourself",
           status: 403,
         });
       }
@@ -77,33 +99,28 @@ const userController = {
       }
 
       if (user.status === false) {
-        return res.status(404).json({
-          message: "Account is already deleted",
-          status: 404,
+        await User.findByIdAndDelete(req.params.id);
+        return res.status(200).json({
+          message: "Delete Successful",
+          status: 200,
+        });
+      } else {
+        return res.status(400).json({
+          message: "Cannot delete user before inactive",
+          status: 400,
         });
       }
-
-      user.status = false;
-      await user.save();
-
-      return res.status(200).json({
-        message: "Delete Successful",
-        status: 200,
-      });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
   updateUser: async (req, res) => {
     const id = req.params.id;
-    const newPhone = req.body.phone;
-    const newName = req.body.name;
-    const newAddress = req.body.address;
-    const newDob = req.body.dob;
+    const { name, phone, address, dob } = req.body;
     const myRole = req.user.role;
     const targetUser = await User.findById(id);
-    const existingPhoneUser = await User.findOne({ phone: newPhone });
+    const existingPhoneUser = await User.findOne({ phone });
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -113,14 +130,14 @@ const userController = {
         });
       }
 
-      if (!newName || !newPhone || !newAddress) {
+      if (!name || !phone || !address) {
         return res.status(400).json({
           message: "Name, phone and address must be required",
           status: 400,
         });
       }
 
-      if (newName.length < 8) {
+      if (name.length < 8) {
         return res.status(400).json({
           message: "Name must be at least 8 characters long",
           status: 400,
@@ -134,7 +151,7 @@ const userController = {
         });
       }
 
-      if (newPhone.length !== 10) {
+      if (phone.length !== 10) {
         return res.status(400).json({
           message: "Phone number must be 10 digits",
           status: 400,
@@ -154,10 +171,10 @@ const userController = {
       const user = await User.findByIdAndUpdate(
         id,
         {
-          name: newName,
-          phone: newPhone,
-          address: newAddress,
-          dob: newDob,
+          name,
+          phone,
+          address,
+          dob,
         },
         { new: true }
       );
@@ -173,7 +190,7 @@ const userController = {
         });
       }
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 
@@ -214,7 +231,7 @@ const userController = {
         status: 200,
       });
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(400).json(err);
     }
   },
 };
