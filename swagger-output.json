@@ -7,6 +7,9 @@
   },
   "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
+  "schemes": [
+    "https"
+  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -18,9 +21,6 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
         "description": "",
         "parameters": [
           {
@@ -44,9 +44,6 @@
     },
     "/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
         "description": "",
         "parameters": [
           {
@@ -92,9 +89,6 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
         "description": "",
         "parameters": [
           {
@@ -131,9 +125,6 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
         "description": "",
         "parameters": [
           {
@@ -161,20 +152,17 @@
     },
     "/user/": {
       "get": {
-        "tags": [
-          "User"
-        ],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
+            "type": "string"
           }
         ],
         "responses": {
@@ -195,9 +183,6 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": [
-          "User"
-        ],
         "description": "",
         "parameters": [
           {
@@ -223,9 +208,6 @@
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
         "description": "",
         "parameters": [
           {
@@ -251,9 +233,6 @@
         }
       },
       "put": {
-        "tags": [
-          "User"
-        ],
         "description": "",
         "parameters": [
           {
@@ -307,9 +286,6 @@
     },
     "/user/status/{id}": {
       "patch": {
-        "tags": [
-          "User"
-        ],
         "description": "",
         "parameters": [
           {
@@ -349,20 +325,17 @@
     },
     "/product/": {
       "get": {
-        "tags": [
-          "Product"
-        ],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
+            "type": "string"
           }
         ],
         "responses": {
@@ -380,9 +353,6 @@
     },
     "/product/{id}": {
       "get": {
-        "tags": [
-          "Product"
-        ],
         "description": "",
         "parameters": [
           {
@@ -405,9 +375,6 @@
         }
       },
       "delete": {
-        "tags": [
-          "Product"
-        ],
         "description": "",
         "parameters": [
           {
@@ -433,9 +400,6 @@
         }
       },
       "put": {
-        "tags": [
-          "Product"
-        ],
         "description": "",
         "parameters": [
           {
@@ -460,16 +424,16 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 1
                 },
                 "typeOfProduct": {
                   "example": "any"
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "rating": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }
@@ -490,9 +454,6 @@
     },
     "/product/create": {
       "post": {
-        "tags": [
-          "Product"
-        ],
         "description": "",
         "parameters": [
           {
@@ -508,13 +469,13 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "rating": {
-                  "example": "any"
+                  "example": 5
                 }
               }
             }
@@ -535,20 +496,17 @@
     },
     "/post/": {
       "get": {
-        "tags": [
-          "Post"
-        ],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
+            "type": "string"
           }
         ],
         "responses": {
@@ -566,9 +524,6 @@
     },
     "/post/{id}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
         "description": "",
         "parameters": [
           {
@@ -591,9 +546,6 @@
         }
       },
       "put": {
-        "tags": [
-          "Post"
-        ],
         "description": "",
         "parameters": [
           {
@@ -634,9 +586,6 @@
         }
       },
       "delete": {
-        "tags": [
-          "Post"
-        ],
         "description": "",
         "parameters": [
           {
@@ -664,9 +613,6 @@
     },
     "/post/create": {
       "post": {
-        "tags": [
-          "Post"
-        ],
         "description": "",
         "parameters": [
           {
@@ -682,6 +628,9 @@
                   "example": "any"
                 },
                 "image": {
+                  "example": "any"
+                },
+                "product": {
                   "example": "any"
                 }
               }
@@ -703,9 +652,6 @@
     },
     "/order/create": {
       "post": {
-        "tags": [
-          "Order"
-        ],
         "description": "",
         "parameters": [
           {
@@ -715,10 +661,49 @@
               "type": "object",
               "properties": {
                 "transferAddress": {
-                  "example": "any"
+                  "type": "object",
+                  "properties": {
+                    "fullName": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "any"
+                    }
+                  }
                 },
                 "orderProducts": {
-                  "example": "any"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "any"
+                      },
+                      "image": {
+                        "type": "string",
+                        "example": "any"
+                      },
+                      "amount": {
+                        "type": "number",
+                        "example": 10
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 10
+                      },
+                      "product": {
+                        "type": "string",
+                        "example": "any"
+                      }
+                    }
+                  }
                 },
                 "user": {
                   "example": "any"
@@ -727,13 +712,13 @@
                   "example": "any"
                 },
                 "itemsPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "transferPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "totalPrice": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }
@@ -868,6 +853,7 @@
       "title": "post",
       "required": [
         "title",
+        "product",
         "image"
       ],
       "properties": {
@@ -877,6 +863,9 @@
         "description": {
           "type": "string",
           "required": false
+        },
+        "product": {
+          "type": "schemaobjectid"
         },
         "image": {
           "type": "string"
@@ -897,7 +886,6 @@
     "Order": {
       "title": "order",
       "required": [
-        "user",
         "paymentMethod",
         "itemsPrice",
         "transferPrice",
