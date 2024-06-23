@@ -21,6 +21,9 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -44,6 +47,9 @@
     },
     "/auth/register": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -89,6 +95,9 @@
     },
     "/auth/login": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -125,6 +134,9 @@
     },
     "/auth/refresh": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -152,17 +164,20 @@
     },
     "/user/": {
       "get": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -183,6 +198,9 @@
     },
     "/user/{id}": {
       "get": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -208,6 +226,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -233,6 +254,9 @@
         }
       },
       "put": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -286,6 +310,9 @@
     },
     "/user/status/{id}": {
       "patch": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -325,17 +352,20 @@
     },
     "/product/": {
       "get": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -353,6 +383,9 @@
     },
     "/product/{id}": {
       "get": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -375,6 +408,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -400,6 +436,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -454,6 +493,9 @@
     },
     "/product/create": {
       "post": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -496,17 +538,20 @@
     },
     "/post/": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -524,6 +569,9 @@
     },
     "/post/{id}": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -546,6 +594,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -586,6 +637,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -613,6 +667,9 @@
     },
     "/post/create": {
       "post": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -652,6 +709,9 @@
     },
     "/order/create": {
       "post": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
