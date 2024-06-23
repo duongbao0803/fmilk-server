@@ -10,6 +10,11 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "product",
+      required: true,
+    },
     image: {
       type: String,
       required: true,

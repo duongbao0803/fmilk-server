@@ -97,7 +97,7 @@ const authController = {
         role: user.role,
       },
       process.env.ACCESS_TOKEN,
-      { expiresIn: 900 }
+      { expiresIn: "2 days" }
     );
   },
 
