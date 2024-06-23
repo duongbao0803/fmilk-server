@@ -70,9 +70,9 @@ const postController = {
 
   addPost: async (req, res) => {
     try {
-      const { title, description, image } = req.body;
+      const { title, description, image, product } = req.body;
 
-      if (!title || !description || !image) {
+      if (!title || !description || !image || !product) {
         res.status(400).json({
           message: "Input must be required",
           status: 400,
@@ -83,6 +83,7 @@ const postController = {
         title,
         description,
         image,
+        product,
       });
       const post = await newPost.save();
 
