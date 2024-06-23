@@ -36,6 +36,20 @@ const orderController = {
           .json({ message: "No order products", status: 400 });
       }
 
+      if (!ObjectId.isValid(req.body.user)) {
+        return res.status(400).json({
+          message: "Invalid user ID",
+          status: 400,
+        });
+      }
+
+      if (!ObjectId.isValid(req.body.orderProducts.product)) {
+        return res.status(400).json({
+          message: "Invalid product ID",
+          status: 400,
+        });
+      }
+
       const order = new Order({
         orderProducts,
         transferAddress: {

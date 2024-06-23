@@ -68,8 +68,11 @@ const middlewareController = {
   },
 
   verifyTokenCustomer: (req, res, next) => {
+    if (!req.headers["authorization"]) {
+      return next();
+    }
     middlewareController.verifyToken(req, res, () => {
-      if (req.user.id === req.params.id || req.user.role === "MEMBER") {
+      if (req.user.role === "MEMBER" || !req.user) {
         next();
       } else {
         res.status(403).json({
