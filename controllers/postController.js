@@ -71,16 +71,16 @@ const postController = {
 
   addPost: async (req, res) => {
     try {
-      const { title, description, image, product } = req.body;
+      const { title, description, image, productId } = req.body;
 
-      if (!title || !description || !image || !product) {
+      if (!title || !description || !image || !productId) {
         return res.status(400).json({
-          message: "All fields are required",
+          message: "Input must be required",
           status: 400,
         });
       }
 
-      if (!ObjectId.isValid(req.body.product)) {
+      if (!ObjectId.isValid(req.body.productId)) {
         return res.status(400).json({
           message: "Invalid product ID",
           status: 400,
@@ -91,7 +91,7 @@ const postController = {
         title,
         description,
         image,
-        product,
+        productId,
       });
 
       return res.status(200).json({
