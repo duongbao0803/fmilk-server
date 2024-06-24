@@ -110,7 +110,7 @@ const orderController = {
         await Promise.all(
           detailOrderProducts.map(async (product) => {
             const foundProduct = await Product.findById(product.productId);
-            if (!foundProduct.status.includes("AVAILABLE")) {
+            if (foundProduct.status.includes("AVAILABLE")) {
               if (foundProduct.quantity < product.amount) {
                 return res.status(404).json({
                   message: `The product only has ${foundProduct.quantity} left in stock`,
