@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Post = require("../models/post");
+const Product = require("../models/product");
 
 const postController = {
   getAllPost: async (req, res) => {
@@ -70,21 +71,28 @@ const postController = {
 
   addPost: async (req, res) => {
     try {
-      const { title, description, image } = req.body;
+      const { title, description, image, productId } = req.body;
 
-      if (!title || !description || !image) {
-        res.status(400).json({
-          message: "Input must be required",
+      if (!title || !description || !image || !productId) {
+        return res.status(400).json({
+          message: "All fields must be required",
           status: 400,
         });
       }
 
-      const newPost = new Post({
+      if (!ObjectId.isValid(req.body.productId)) {
+        return res.status(400).json({
+          message: "Invalid product ID",
+          status: 400,
+        });
+      }
+
+      const post = await Post.create({
         title,
         description,
         image,
+        productId,
       });
-      const post = await newPost.save();
 
       return res.status(200).json({
         message: "Add Successful",
@@ -135,7 +143,7 @@ const postController = {
 
       if (!title || !description || !image) {
         return res.status(400).json({
-          message: "Input must be required",
+          message: "All fields must be required",
           status: 400,
         });
       }

@@ -7,6 +7,7 @@
   },
   "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
+  "schemes": ["https"],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -18,9 +19,7 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -44,9 +43,7 @@
     },
     "/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -92,9 +89,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -131,9 +126,7 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -161,9 +154,7 @@
     },
     "/user/": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -195,9 +186,7 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -223,9 +212,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -251,9 +238,7 @@
         }
       },
       "put": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -307,9 +292,7 @@
     },
     "/user/status/{id}": {
       "patch": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -349,9 +332,7 @@
     },
     "/product/": {
       "get": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -380,9 +361,7 @@
     },
     "/product/{id}": {
       "get": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -405,9 +384,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -433,9 +410,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -460,16 +435,16 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "typeOfProduct": {
                   "example": "any"
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "rating": {
-                  "example": "any"
+                  "example": 5
                 }
               }
             }
@@ -490,9 +465,7 @@
     },
     "/product/create": {
       "post": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -505,15 +478,24 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "any"
+                  "example": "YYYY-MM-DD"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "rating": {
+                  "example": 5
+                },
+                "image": {
+                  "example": "any"
+                },
+                "typeOfProduct": {
+                  "example": "any"
+                },
+                "description": {
                   "example": "any"
                 }
               }
@@ -535,9 +517,7 @@
     },
     "/post/": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -566,9 +546,7 @@
     },
     "/post/{id}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -591,9 +569,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -634,9 +610,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -664,9 +638,7 @@
     },
     "/post/create": {
       "post": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -675,6 +647,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "productId": {
+                  "example": "any"
+                },
                 "title": {
                   "example": "any"
                 },
@@ -703,9 +678,7 @@
     },
     "/order/create": {
       "post": {
-        "tags": [
-          "Order"
-        ],
+        "tags": ["Order"],
         "description": "",
         "parameters": [
           {
@@ -715,25 +688,52 @@
               "type": "object",
               "properties": {
                 "transferAddress": {
-                  "example": "any"
+                  "type": "object",
+                  "properties": {
+                    "fullName": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "any"
+                    }
+                  }
                 },
                 "orderProducts": {
-                  "example": "any"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "example": 10
+                      },
+                      "productId": {
+                        "type": "string",
+                        "example": "any"
+                      }
+                    }
+                  }
                 },
-                "user": {
-                  "example": "any"
+                "userId": {
+                  "example": null
                 },
                 "paymentMethod": {
                   "example": "any"
                 },
                 "itemsPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "transferPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "totalPrice": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }
@@ -748,6 +748,9 @@
           },
           "403": {
             "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -756,14 +759,7 @@
   "definitions": {
     "User": {
       "title": "user",
-      "required": [
-        "username",
-        "name",
-        "phone",
-        "email",
-        "address",
-        "password"
-      ],
+      "required": ["username", "name", "phone", "email", "address", "password"],
       "properties": {
         "username": {
           "type": "string"
@@ -846,10 +842,7 @@
         },
         "status": {
           "type": "string",
-          "enum": [
-            "AVAILABLE",
-            "EXPIRE"
-          ]
+          "enum": ["AVAILABLE", "EXPIRE"]
         },
         "_id": {
           "type": "string"
@@ -866,10 +859,7 @@
     },
     "Post": {
       "title": "post",
-      "required": [
-        "title",
-        "image"
-      ],
+      "required": ["title", "productId", "image"],
       "properties": {
         "title": {
           "type": "string"
@@ -877,6 +867,9 @@
         "description": {
           "type": "string",
           "required": false
+        },
+        "productId": {
+          "type": "schemaobjectid"
         },
         "image": {
           "type": "string"
@@ -897,7 +890,6 @@
     "Order": {
       "title": "order",
       "required": [
-        "user",
         "paymentMethod",
         "itemsPrice",
         "transferPrice",
@@ -921,20 +913,14 @@
               "price": {
                 "type": "number"
               },
-              "product": {
+              "productId": {
                 "type": "schemaobjectid"
               }
             },
-            "required": [
-              "name",
-              "image",
-              "amount",
-              "price",
-              "product"
-            ]
+            "required": ["name", "image", "amount", "price", "productId"]
           }
         },
-        "user": {
+        "userId": {
           "type": "schemaobjectid"
         },
         "transferAddress": {
