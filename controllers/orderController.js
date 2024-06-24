@@ -107,11 +107,14 @@ const orderController = {
       });
 
       if (order) {
+        let isError = false;
+
         await Promise.all(
           detailOrderProducts.map(async (product) => {
             const foundProduct = await Product.findById(product.productId);
             if (foundProduct.status.includes("AVAILABLE")) {
               if (foundProduct.quantity < product.amount) {
+                isError = true;
                 return res.status(404).json({
                   message: `The product only has ${foundProduct.quantity} left in stock`,
                   status: 404,
@@ -121,17 +124,21 @@ const orderController = {
                 await foundProduct.save({ validateModifiedOnly: true });
               }
             } else {
+              isError = true;
               return res.status(404).json({
-                message: "The product is expire",
+                message: "The product is expired",
                 status: 404,
               });
             }
           })
         );
-        return res.status(200).json({
-          message: "Create order successful",
-          status: 200,
-        });
+
+        if (!isError) {
+          return res.status(200).json({
+            message: "Create order successful",
+            status: 200,
+          });
+        }
       }
     } catch (err) {
       return res.status(400).json(err);
