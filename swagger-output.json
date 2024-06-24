@@ -5,11 +5,9 @@
     "description": "API Documentation for FMilk Web",
     "version": "1.0.0"
   },
-  "host": "localhost:8000",
+  "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["https"],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -21,9 +19,7 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -47,9 +43,7 @@
     },
     "/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -95,9 +89,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -134,9 +126,7 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -164,9 +154,7 @@
     },
     "/user/": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -198,9 +186,7 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -226,9 +212,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -254,9 +238,7 @@
         }
       },
       "put": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -310,9 +292,7 @@
     },
     "/user/status/{id}": {
       "patch": {
-        "tags": [
-          "User"
-        ],
+        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -352,9 +332,7 @@
     },
     "/product/": {
       "get": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -383,9 +361,7 @@
     },
     "/product/{id}": {
       "get": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -408,9 +384,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -436,9 +410,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -493,9 +465,7 @@
     },
     "/product/create": {
       "post": {
-        "tags": [
-          "Product"
-        ],
+        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -547,9 +517,7 @@
     },
     "/post/": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -578,9 +546,7 @@
     },
     "/post/{id}": {
       "get": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -603,9 +569,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -646,9 +610,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -676,9 +638,7 @@
     },
     "/post/create": {
       "post": {
-        "tags": [
-          "Post"
-        ],
+        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -718,9 +678,7 @@
     },
     "/order/create": {
       "post": {
-        "tags": [
-          "Order"
-        ],
+        "tags": ["Order"],
         "description": "",
         "parameters": [
           {
@@ -801,14 +759,7 @@
   "definitions": {
     "User": {
       "title": "user",
-      "required": [
-        "username",
-        "name",
-        "phone",
-        "email",
-        "address",
-        "password"
-      ],
+      "required": ["username", "name", "phone", "email", "address", "password"],
       "properties": {
         "username": {
           "type": "string"
@@ -891,10 +842,7 @@
         },
         "status": {
           "type": "string",
-          "enum": [
-            "AVAILABLE",
-            "EXPIRE"
-          ]
+          "enum": ["AVAILABLE", "EXPIRE"]
         },
         "_id": {
           "type": "string"
@@ -911,11 +859,7 @@
     },
     "Post": {
       "title": "post",
-      "required": [
-        "title",
-        "productId",
-        "image"
-      ],
+      "required": ["title", "productId", "image"],
       "properties": {
         "title": {
           "type": "string"
@@ -973,13 +917,7 @@
                 "type": "schemaobjectid"
               }
             },
-            "required": [
-              "name",
-              "image",
-              "amount",
-              "price",
-              "productId"
-            ]
+            "required": ["name", "image", "amount", "price", "productId"]
           }
         },
         "userId": {
