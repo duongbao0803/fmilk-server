@@ -15,19 +15,21 @@ const orderSchema = new mongoose.Schema(
         amount: {
           type: Number,
           required: true,
+          min: 1,
         },
         price: {
           type: Number,
           required: true,
+          min: 1,
         },
-        product: {
+        productId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "product",
           required: true,
         },
       },
     ],
-    user: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
@@ -52,14 +54,17 @@ const orderSchema = new mongoose.Schema(
     itemsPrice: {
       type: Number,
       required: true,
+      min: 1,
     },
     transferPrice: {
       type: Number,
       required: true,
+      min: 1,
     },
     totalPrice: {
       type: Number,
       required: true,
+      min: 1,
     },
     isPaid: {
       type: Boolean,

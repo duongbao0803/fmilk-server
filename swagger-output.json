@@ -435,7 +435,7 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": 1
+                  "example": 10
                 },
                 "typeOfProduct": {
                   "example": "any"
@@ -444,7 +444,7 @@
                   "example": 10
                 },
                 "rating": {
-                  "example": 10
+                  "example": 5
                 }
               }
             }
@@ -478,7 +478,7 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "any"
+                  "example": "YYYY-MM-DD"
                 },
                 "quantity": {
                   "example": 10
@@ -488,6 +488,15 @@
                 },
                 "rating": {
                   "example": 5
+                },
+                "image": {
+                  "example": "any"
+                },
+                "typeOfProduct": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
                 }
               }
             }
@@ -638,6 +647,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "productId": {
+                  "example": "any"
+                },
                 "title": {
                   "example": "any"
                 },
@@ -645,9 +657,6 @@
                   "example": "any"
                 },
                 "image": {
-                  "example": "any"
-                },
-                "product": {
                   "example": "any"
                 }
               }
@@ -700,31 +709,19 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "name": {
-                        "type": "string",
-                        "example": "any"
-                      },
-                      "image": {
-                        "type": "string",
-                        "example": "any"
-                      },
                       "amount": {
                         "type": "number",
                         "example": 10
                       },
-                      "price": {
-                        "type": "number",
-                        "example": 10
-                      },
-                      "product": {
+                      "productId": {
                         "type": "string",
                         "example": "any"
                       }
                     }
                   }
                 },
-                "user": {
-                  "example": "any"
+                "userId": {
+                  "example": null
                 },
                 "paymentMethod": {
                   "example": "any"
@@ -751,6 +748,9 @@
           },
           "403": {
             "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -859,7 +859,7 @@
     },
     "Post": {
       "title": "post",
-      "required": ["title", "product", "image"],
+      "required": ["title", "productId", "image"],
       "properties": {
         "title": {
           "type": "string"
@@ -868,7 +868,7 @@
           "type": "string",
           "required": false
         },
-        "product": {
+        "productId": {
           "type": "schemaobjectid"
         },
         "image": {
@@ -913,14 +913,14 @@
               "price": {
                 "type": "number"
               },
-              "product": {
+              "productId": {
                 "type": "schemaobjectid"
               }
             },
-            "required": ["name", "image", "amount", "price", "product"]
+            "required": ["name", "image", "amount", "price", "productId"]
           }
         },
-        "user": {
+        "userId": {
           "type": "schemaobjectid"
         },
         "transferAddress": {

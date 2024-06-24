@@ -70,10 +70,35 @@ const productController = {
 
   addProduct: async (req, res) => {
     try {
-      const { name, expireDate, quantity, price, rating } = req.body;
+      const {
+        name,
+        expireDate,
+        quantity,
+        price,
+        rating,
+        image,
+        typeOfProduct,
+        description,
+      } = req.body;
       const currentDate = new Date();
       const inputExpireDate = new Date(expireDate);
       const existingProduct = await Product.findOne({ name });
+
+      if (
+        !name ||
+        !expireDate ||
+        !quantity ||
+        !price ||
+        !rating ||
+        !image ||
+        !typeOfProduct ||
+        !description
+      ) {
+        return res.status(400).json({
+          message: "All fields must be required",
+          status: 400,
+        });
+      }
 
       if (existingProduct) {
         return res.status(400).json({
@@ -96,7 +121,7 @@ const productController = {
         });
       }
 
-      if (inputExpireDate <= currentDate) {
+      if (inputExpireDate < currentDate) {
         return res.status(400).json({
           message: "Expire date must be a in future",
           status: 400,
@@ -170,7 +195,7 @@ const productController = {
         !rating
       ) {
         return res.status(400).json({
-          message: "Input must be required",
+          message: "All fields must be required",
           status: 400,
         });
       }
