@@ -58,6 +58,7 @@ const orderController = {
           status: 400,
         });
       }
+
       if (userId) {
         const user = await User.findById(userId);
         if (!user) {
@@ -66,14 +67,16 @@ const orderController = {
             status: 404,
           });
         }
-        if (user) {
-          if (user.role.includes("ADMIN") || user.role.includes("STAFF")) {
-            return res.status(403).json({
-              message: "Admin and Staff don't have permission to order",
-              status: 403,
-            });
-          }
+        if (user.role.includes("ADMIN") || user.role.includes("STAFF")) {
+          return res.status(403).json({
+            message: "Admin and Staff don't have permission to order",
+            status: 403,
+          });
         }
+        if (paymentMethod === "VNPAY" && user.role.includes("MEMBER")) {
+          // xử lý vnpay
+        }
+      } else {
       }
 
       const detailOrderProducts = await Promise.all(
@@ -92,6 +95,32 @@ const orderController = {
         })
       );
 
+      let hasError = false;
+
+      await Promise.all(
+        detailOrderProducts.map(async (product) => {
+          const foundProduct = await Product.findById(product.productId);
+          if (foundProduct.status.includes("AVAILABLE")) {
+            if (foundProduct.quantity < product.amount) {
+              hasError = true;
+              return res.status(404).json({
+                message: `The product only has ${foundProduct.quantity} left in stock`,
+                status: 404,
+              });
+            } else {
+              foundProduct.quantity -= product.amount;
+              await foundProduct.save({ validateModifiedOnly: true });
+            }
+          } else {
+            hasError = true;
+            return res.status(404).json({
+              message: "The product is expired",
+              status: 404,
+            });
+          }
+        })
+      );
+
       const order = await Order.create({
         orderProducts: detailOrderProducts,
         transferAddress: {
@@ -107,38 +136,10 @@ const orderController = {
       });
 
       if (order) {
-        let isError = false;
-
-        await Promise.all(
-          detailOrderProducts.map(async (product) => {
-            const foundProduct = await Product.findById(product.productId);
-            if (foundProduct.status.includes("AVAILABLE")) {
-              if (foundProduct.quantity < product.amount) {
-                isError = true;
-                return res.status(404).json({
-                  message: `The product only has ${foundProduct.quantity} left in stock`,
-                  status: 404,
-                });
-              } else {
-                foundProduct.quantity -= product.amount;
-                await foundProduct.save({ validateModifiedOnly: true });
-              }
-            } else {
-              isError = true;
-              return res.status(404).json({
-                message: "The product is expired",
-                status: 404,
-              });
-            }
-          })
-        );
-
-        if (!isError) {
-          return res.status(200).json({
-            message: "Create order successful",
-            status: 200,
-          });
-        }
+        return res.status(200).json({
+          message: "Create order successful",
+          status: 200,
+        });
       }
     } catch (err) {
       return res.status(400).json(err);

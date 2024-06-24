@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Product = require("../models/product");
+const Post = require("../models/post");
 
 const productController = {
   getAllProduct: async (req, res) => {
@@ -141,6 +142,17 @@ const productController = {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
           message: "Invalid product ID",
+          status: 400,
+        });
+      }
+
+      const postsUsingProduct = await Post.findOne({
+        productId: req.params.id,
+      });
+
+      if (postsUsingProduct) {
+        return res.status(400).json({
+          message: "Cannot delete product. It still exist in post",
           status: 400,
         });
       }
