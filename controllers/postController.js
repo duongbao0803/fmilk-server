@@ -75,7 +75,7 @@ const postController = {
 
       if (!title || !description || !image || !productId) {
         return res.status(400).json({
-          message: "Input must be required",
+          message: "All fields must be required",
           status: 400,
         });
       }
@@ -143,7 +143,7 @@ const postController = {
 
       if (!title || !description || !image) {
         return res.status(400).json({
-          message: "Input must be required",
+          message: "All fields must be required",
           status: 400,
         });
       }
