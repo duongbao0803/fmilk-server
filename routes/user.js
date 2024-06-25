@@ -8,11 +8,28 @@ router.get(
   middlewareController.verifyTokenAdmin,
   userController.getAllUser
 );
+router.get(
+  "/search",
+  middlewareController.verifyTokenAdmin,
+  userController.searchUser
+);
 
 router.get(
   "/:id",
   middlewareController.verifyTokenAdmin,
   userController.getDetailUser
+);
+
+router.put(
+  "/personal-information",
+  middlewareController.verifyToken,
+  userController.editInfoPersonal
+);
+
+router.put(
+  "/change-password",
+  middlewareController.verifyToken,
+  userController.changePassword
 );
 
 router.delete(

@@ -30,7 +30,7 @@ const productController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Product not found",
+          message: "Not found product",
           status: 404,
         });
       }
@@ -57,7 +57,7 @@ const productController = {
       const productInfo = await Product.findById(req.params.id);
       if (!productInfo) {
         return res.status(404).json({
-          message: "Product not found",
+          message: "Not found product",
           status: 404,
         });
       }
@@ -69,6 +69,23 @@ const productController = {
     }
   },
 
+  searchProduct: async (req, res) => {
+    try {
+      const { productName } = req.query;
+      const products = await Product.find({
+        name: { $regex: productName, $options: "i" },
+      });
+
+      if (products.length === 0) {
+        return res.status(404).json({ message: "Not found product" });
+      }
+
+      return res.status(200).json(products);
+    } catch (err) {
+      return res.status(400).json(err);
+    }
+  },
+
   addProduct: async (req, res) => {
     try {
       const {
@@ -76,10 +93,10 @@ const productController = {
         expireDate,
         quantity,
         price,
-        rating,
         image,
-        typeOfProduct,
         description,
+        origin,
+        brand,
       } = req.body;
       const currentDate = new Date();
       const inputExpireDate = new Date(expireDate);
@@ -90,10 +107,10 @@ const productController = {
         !expireDate ||
         !quantity ||
         !price ||
-        !rating ||
         !image ||
-        !typeOfProduct ||
-        !description
+        !description ||
+        !origin ||
+        !brand
       ) {
         return res.status(400).json({
           message: "All fields must be required",
@@ -115,13 +132,6 @@ const productController = {
         });
       }
 
-      if (rating < 0 || rating > 5) {
-        return res.status(400).json({
-          message: "Rating must be in the range 1 to 5",
-          status: 400,
-        });
-      }
-
       if (inputExpireDate < currentDate) {
         return res.status(400).json({
           message: "Expire date must be a in future",
@@ -129,9 +139,8 @@ const productController = {
         });
       }
 
-      const newProduct = new Product(req.body);
-      const product = await newProduct.save();
-      return res.status(200).json(product);
+      const newProduct = Product.create(req.body);
+      return res.status(200).json(newProduct);
     } catch (err) {
       return res.status(400).json(err);
     }
@@ -160,7 +169,7 @@ const productController = {
       const product = await Product.findByIdAndDelete(req.params.id);
       if (!product) {
         return res.status(404).json({
-          message: "Product not found",
+          message: "Not found product",
           status: 404,
         });
       }
@@ -175,7 +184,7 @@ const productController = {
   },
 
   updateProduct: async (req, res) => {
-    const { name, image, description, quantity, typeOfProduct, price, rating } =
+    const { name, image, description, quantity, price, origin, brand } =
       req.body;
     const existingProduct = await Product.findOne({
       name,
@@ -202,9 +211,9 @@ const productController = {
         !image ||
         !description ||
         !quantity ||
-        !typeOfProduct ||
         !price ||
-        !rating
+        !origin ||
+        !brand
       ) {
         return res.status(400).json({
           message: "All fields must be required",
@@ -218,12 +227,6 @@ const productController = {
         });
       }
 
-      if (rating < 0 || rating > 5) {
-        return res.status(400).json({
-          message: "Rating must be in range 1 -> 5",
-        });
-      }
-
       const product = await Product.findByIdAndUpdate(
         req.params.id,
         {
@@ -231,9 +234,9 @@ const productController = {
           image,
           description,
           quantity,
-          typeOfProduct,
           price,
-          rating,
+          brand,
+          origin,
         },
         { new: true }
       );

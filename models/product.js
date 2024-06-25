@@ -20,17 +20,17 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    typeOfProduct: {
-      type: String,
-      required: true,
-    },
     price: {
       type: Number,
       required: true,
       min: 1,
     },
-    rating: {
-      type: Number,
+    origin: {
+      type: String,
+      required: true,
+    },
+    brand: {
+      type: String,
       required: true,
     },
     expireDate: {
@@ -42,6 +42,12 @@ const productSchema = new mongoose.Schema(
       enum: ["AVAILABLE", "EXPIRE"],
       default: "AVAILABLE",
     },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "comment",
+      },
+    ],
   },
   { timestamps: true }
 );
