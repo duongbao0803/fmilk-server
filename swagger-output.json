@@ -21,13 +21,6 @@
       "get": {
         "tags": ["Auth"],
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -184,6 +177,33 @@
         }
       }
     },
+    "/user/search": {
+      "get": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/user/{id}": {
       "get": {
         "tags": ["User"],
@@ -248,11 +268,6 @@
             "type": "string"
           },
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
             "name": "body",
             "in": "body",
             "schema": {
@@ -286,6 +301,80 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/user/personal-information": {
+      "put": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                },
+                "dob": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/user/change-password": {
+      "put": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "oldPassword": {
+                  "example": "any"
+                },
+                "newPassword": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -344,6 +433,30 @@
             "name": "pageSize",
             "in": "query",
             "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/product/search": {
+      "get": {
+        "tags": ["Product"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "productName",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -435,16 +548,16 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": 10
-                },
-                "typeOfProduct": {
                   "example": "any"
                 },
                 "price": {
-                  "example": 10
+                  "example": "any"
                 },
-                "rating": {
-                  "example": 5
+                "origin": {
+                  "example": "any"
+                },
+                "brand": {
+                  "example": "any"
                 }
               }
             }
@@ -478,24 +591,24 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "YYYY-MM-DD"
+                  "example": "any"
                 },
                 "quantity": {
-                  "example": 10
+                  "example": "any"
                 },
                 "price": {
-                  "example": 10
-                },
-                "rating": {
-                  "example": 5
+                  "example": "any"
                 },
                 "image": {
                   "example": "any"
                 },
-                "typeOfProduct": {
+                "description": {
                   "example": "any"
                 },
-                "description": {
+                "origin": {
+                  "example": "any"
+                },
+                "brand": {
                   "example": "any"
                 }
               }
@@ -529,6 +642,30 @@
             "name": "pageSize",
             "in": "query",
             "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/post/search": {
+      "get": {
+        "tags": ["Post"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -591,6 +728,9 @@
                   "example": "any"
                 },
                 "image": {
+                  "example": "any"
+                },
+                "productId": {
                   "example": "any"
                 }
               }
@@ -672,6 +812,66 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/order/": {
+      "get": {
+        "tags": ["Order"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/order/{id}": {
+      "get": {
+        "tags": ["Order"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -809,9 +1009,9 @@
         "image",
         "description",
         "quantity",
-        "typeOfProduct",
         "price",
-        "rating",
+        "origin",
+        "brand",
         "expireDate"
       ],
       "properties": {
@@ -827,14 +1027,14 @@
         "quantity": {
           "type": "number"
         },
-        "typeOfProduct": {
-          "type": "string"
-        },
         "price": {
           "type": "number"
         },
-        "rating": {
-          "type": "number"
+        "origin": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
         },
         "expireDate": {
           "type": "string",
@@ -843,6 +1043,12 @@
         "status": {
           "type": "string",
           "enum": ["AVAILABLE", "EXPIRE"]
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "schemaobjectid"
+          }
         },
         "_id": {
           "type": "string"

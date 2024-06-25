@@ -5,6 +5,72 @@ const User = require("../models/user");
 const Product = require("../models/product");
 
 const orderController = {
+  getAllOrder: async (req, res) => {
+    try {
+      let { page, pageSize } = req.query;
+      page = parseInt(page) || 1;
+      pageSize = parseInt(pageSize) || 10;
+
+      if (page <= 0) {
+        return res.status(400).json({
+          message: "Page number must be a positive integer",
+          status: 400,
+        });
+      }
+
+      if (pageSize <= 0) {
+        return res.status(400).json({
+          message: "Page size must be a positive integer",
+          status: 400,
+        });
+      }
+
+      const skip = (page - 1) * pageSize;
+
+      const orders = await Order.find().skip(skip).limit(pageSize);
+      const totalCount = await Order.countDocuments();
+
+      if (skip >= totalCount) {
+        return res.status(404).json({
+          message: "Not found order",
+          status: 404,
+        });
+      }
+
+      return res.status(200).json({
+        orders,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / pageSize),
+        totalOrders: totalCount,
+      });
+    } catch (err) {
+      return res.status(400).json(err);
+    }
+  },
+
+  getDetailOrder: async (req, res) => {
+    try {
+      if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+          message: "Invalid order ID",
+          status: 400,
+        });
+      }
+
+      const orderInfo = await Order.findById(req.params.id);
+      if (!orderInfo) {
+        return res.status(404).json({
+          message: "Not found order",
+          status: 404,
+        });
+      }
+
+      return res.status(200).json({ orderInfo });
+    } catch (err) {
+      return res.status(400).json(err);
+    }
+  },
+
   createOrder: async (req, res) => {
     try {
       const {
@@ -58,22 +124,26 @@ const orderController = {
           status: 400,
         });
       }
+
       if (userId) {
         const user = await User.findById(userId);
         if (!user) {
           return res.status(404).json({
-            message: "User not found",
+            message: "Not found user",
             status: 404,
           });
         }
-        if (user) {
-          if (user.role.includes("ADMIN") || user.role.includes("STAFF")) {
-            return res.status(403).json({
-              message: "Admin and Staff don't have permission to order",
-              status: 403,
-            });
-          }
+        if (user.role.includes("ADMIN") || user.role.includes("STAFF")) {
+          return res.status(403).json({
+            message: "Admin and Staff don't have permission to order",
+            status: 403,
+          });
         }
+        if (paymentMethod === "VNPAY" && user.role.includes("MEMBER")) {
+          // xử lý vnpay
+        }
+      } else {
+        //
       }
 
       const detailOrderProducts = await Promise.all(
@@ -92,7 +162,28 @@ const orderController = {
         })
       );
 
-      const order = await Order.create({
+      for (const product of detailOrderProducts) {
+        const foundProduct = await Product.findById(product.productId);
+        if (foundProduct.status.includes("AVAILABLE")) {
+          if (foundProduct.quantity < product.amount) {
+            return res.status(404).json({
+              message: `The product only has ${foundProduct.quantity} left in stock`,
+              status: 404,
+            });
+          }
+          foundProduct.quantity -= product.amount;
+          await foundProduct.save({ validateModifiedOnly: true });
+        }
+
+        if (foundProduct.status.includes("EXPIRE")) {
+          return res.status(404).json({
+            message: "The product is expired",
+            status: 404,
+          });
+        }
+      }
+
+      await Order.create({
         orderProducts: detailOrderProducts,
         transferAddress: {
           fullName,
@@ -106,40 +197,10 @@ const orderController = {
         userId,
       });
 
-      if (order) {
-        let isError = false;
-
-        await Promise.all(
-          detailOrderProducts.map(async (product) => {
-            const foundProduct = await Product.findById(product.productId);
-            if (foundProduct.status.includes("AVAILABLE")) {
-              if (foundProduct.quantity < product.amount) {
-                isError = true;
-                return res.status(404).json({
-                  message: `The product only has ${foundProduct.quantity} left in stock`,
-                  status: 404,
-                });
-              } else {
-                foundProduct.quantity -= product.amount;
-                await foundProduct.save({ validateModifiedOnly: true });
-              }
-            } else {
-              isError = true;
-              return res.status(404).json({
-                message: "The product is expired",
-                status: 404,
-              });
-            }
-          })
-        );
-
-        if (!isError) {
-          return res.status(200).json({
-            message: "Create order successful",
-            status: 200,
-          });
-        }
-      }
+      return res.status(200).json({
+        message: "Create order successful",
+        status: 200,
+      });
     } catch (err) {
       return res.status(400).json(err);
     }
