@@ -9,7 +9,9 @@ const authController = {
   getInfoUser: async (req, res) => {
     try {
       const user = req.user;
-      const info = await User.findById(user.id).select("username email role");
+      const info = await User.findById(user.id).select(
+        "_id username phone dob address email role"
+      );
       res.json({ info });
     } catch (err) {
       res.status(400), json(err);
@@ -64,8 +66,7 @@ const authController = {
 
       if (username.length < 8 || name.length < 8 || password.length < 8) {
         return res.status(400).json({
-          message:
-            "Username, name, and password must be at least 8 characters long",
+          message: "Username, name, and password must be at least 8 characters",
           status: 400,
         });
       }
@@ -116,6 +117,7 @@ const authController = {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({ username });
+      console.log("check user", user);
       if (!user) {
         return res.status(404).json({
           message: "Username or password is invalid",
