@@ -6,8 +6,10 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const routes = require("./routes/routes");
+const cron = require("node-cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
+const Product = require("./models/product");
 
 dotenv.config();
 const app = express();
@@ -28,6 +30,23 @@ mongoose
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
   });
+
+//Node-cron
+cron.schedule("0 0 * * *", async () => {
+  try {
+    const products = await Product.find({
+      expireDate: { $lt: new Date() },
+      status: "AVAILABLE",
+    });
+    for (const product of products) {
+      product.status = "EXPIRED";
+      await product.save();
+    }
+    console.log("Update product success");
+  } catch (error) {
+    console.error("Error updating product", error);
+  }
+});
 
 // ROUTES
 app.use("/api/v1", routes);

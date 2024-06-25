@@ -5,6 +5,7 @@ const middlewareController = require("../middleware/verifyToken");
 const router = require("express").Router();
 
 router.get("/", postController.getAllPost);
+router.get("/search", postController.searchPost);
 
 router.get("/:id", postController.getDetailPost);
 

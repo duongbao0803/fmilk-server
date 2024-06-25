@@ -30,7 +30,7 @@ const postController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Post not found",
+          message: "Not found post",
           status: 404,
         });
       }
@@ -58,7 +58,7 @@ const postController = {
       const postInfo = await Post.findById(req.params.id);
       if (!postInfo) {
         return res.status(404).json({
-          message: "Post not found",
+          message: "Not found post",
           status: 404,
         });
       }
@@ -66,6 +66,23 @@ const postController = {
       res.status(200).json({ postInfo });
     } catch (err) {
       res.status(400).json(err);
+    }
+  },
+
+  searchPost: async (req, res) => {
+    try {
+      const { title } = req.query;
+      const posts = await Post.find({
+        title: { $regex: title, $options: "i" },
+      });
+
+      if (posts.length === 0) {
+        return res.status(404).json({ message: "Not found post" });
+      }
+
+      return res.status(200).json(posts);
+    } catch (err) {
+      return res.status(400).json(err);
     }
   },
 
@@ -116,7 +133,7 @@ const postController = {
       const post = await Post.findByIdAndDelete(req.params.id);
       if (!post) {
         return res.status(404).json({
-          message: "Post not found",
+          message: "Not found post",
           status: 404,
         });
       }
@@ -131,7 +148,7 @@ const postController = {
   },
 
   updatePost: async (req, res) => {
-    const { title, description, image } = req.body;
+    const { title, description, image, productId } = req.body;
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -154,6 +171,7 @@ const postController = {
           title,
           image,
           description,
+          productId,
         },
         { new: true }
       );

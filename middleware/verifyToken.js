@@ -72,7 +72,7 @@ const middlewareController = {
       return next();
     }
     middlewareController.verifyToken(req, res, () => {
-      if (req.user.role === "MEMBER" || !req.user) {
+      if (req.user.role === "MEMBER") {
         next();
       } else {
         res.status(403).json({
