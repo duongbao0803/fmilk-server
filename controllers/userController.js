@@ -6,7 +6,7 @@ const User = require("../models/user");
 const userController = {
   getAllUser: async (req, res) => {
     try {
-      let { page, pageSize } = req.query;
+      let { page, pageSize, name, role } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -26,11 +26,19 @@ const userController = {
 
       const skip = (page - 1) * pageSize;
 
-      const users = await User.find()
+      const filter = {};
+      if (name) {
+        filter.name = { $regex: name, $options: "i" };
+      }
+      if (role) {
+        filter.role = role;
+      }
+
+      const users = await User.find(filter)
         .select("username name email phone address status role dob")
         .skip(skip)
         .limit(pageSize);
-      const totalCount = await User.countDocuments();
+      const totalCount = await User.countDocuments(filter);
 
       if (skip >= totalCount) {
         return res.status(404).json({
@@ -47,6 +55,22 @@ const userController = {
       });
     } catch (err) {
       return res.status(400).json(err);
+    }
+  },
+
+  getUsersByRole: async (req, res) => {
+    try {
+      const role = req.query.role;
+      if (!role) {
+        return res
+          .status(400)
+          .json({ message: "Role is required", status: 400 });
+      }
+
+      const users = await User.find({ role });
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -71,23 +95,6 @@ const userController = {
       res.status(200).json({ userInfo });
     } catch (err) {
       res.status(400).json(err);
-    }
-  },
-
-  searchUser: async (req, res) => {
-    try {
-      const { name } = req.query;
-      const users = await User.find({
-        name: { $regex: name, $options: "i" },
-      });
-
-      if (users.length === 0) {
-        return res.status(404).json({ message: "Not found user" });
-      }
-
-      return res.status(200).json(users);
-    } catch (err) {
-      return res.status(400).json(err);
     }
   },
 

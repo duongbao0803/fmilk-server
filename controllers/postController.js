@@ -6,7 +6,7 @@ const Product = require("../models/product");
 const postController = {
   getAllPost: async (req, res) => {
     try {
-      let { page, pageSize } = req.query;
+      let { page, pageSize, title } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -25,8 +25,15 @@ const postController = {
       }
 
       const skip = (page - 1) * pageSize;
-      const posts = await Post.find().skip(skip).limit(pageSize);
-      const totalCount = await Post.countDocuments();
+
+      let query = {};
+
+      if (title) {
+        query.title = { $regex: title, $options: "i" };
+      }
+
+      const posts = await Post.find(query).skip(skip).limit(pageSize);
+      const totalCount = await Post.countDocuments(query);
 
       if (skip >= totalCount) {
         return res.status(404).json({
@@ -66,23 +73,6 @@ const postController = {
       res.status(200).json({ postInfo });
     } catch (err) {
       res.status(400).json(err);
-    }
-  },
-
-  searchPost: async (req, res) => {
-    try {
-      const { title } = req.query;
-      const posts = await Post.find({
-        title: { $regex: title, $options: "i" },
-      });
-
-      if (posts.length === 0) {
-        return res.status(404).json({ message: "Not found post" });
-      }
-
-      return res.status(200).json(posts);
-    } catch (err) {
-      return res.status(400).json(err);
     }
   },
 

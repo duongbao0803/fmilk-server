@@ -4,7 +4,6 @@ const middlewareController = require("../middleware/verifyToken");
 const router = require("express").Router();
 
 router.get("/", productController.getAllProduct);
-router.get("/search", productController.searchProduct);
 router.get("/:id", productController.getDetailProduct);
 router.post(
   "/create",

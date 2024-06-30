@@ -5,9 +5,11 @@
     "description": "API Documentation for FMilk Web",
     "version": "1.0.0"
   },
-  "host": "fmilk-server.onrender.com",
+  "host": "localhost:8000",
   "basePath": "/api/v1",
-  "schemes": ["https"],
+  "schemes": [
+    "http"
+  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -19,8 +21,14 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
-        "tags": ["Auth"],
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -36,7 +44,6 @@
     },
     "/auth/register": {
       "post": {
-        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -82,7 +89,6 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -119,7 +125,6 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": ["Auth"],
         "description": "",
         "parameters": [
           {
@@ -147,43 +152,25 @@
     },
     "/user/": {
       "get": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
+            "type": "string"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/user/search": {
-      "get": {
-        "tags": ["User"],
-        "description": "",
-        "parameters": [
           {
             "name": "name",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "role",
             "in": "query",
             "type": "string"
           }
@@ -206,7 +193,6 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -232,7 +218,6 @@
         }
       },
       "delete": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -258,13 +243,17 @@
         }
       },
       "put": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           },
           {
@@ -307,9 +296,13 @@
     },
     "/user/personal-information": {
       "put": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -347,9 +340,13 @@
     },
     "/user/change-password": {
       "put": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
@@ -381,7 +378,6 @@
     },
     "/user/status/{id}": {
       "patch": {
-        "tags": ["User"],
         "description": "",
         "parameters": [
           {
@@ -421,40 +417,25 @@
     },
     "/product/": {
       "get": {
-        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
+            "type": "string"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/product/search": {
-      "get": {
-        "tags": ["Product"],
-        "description": "",
-        "parameters": [
           {
             "name": "productName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "origin",
             "in": "query",
             "type": "string"
           }
@@ -474,7 +455,6 @@
     },
     "/product/{id}": {
       "get": {
-        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -497,7 +477,6 @@
         }
       },
       "delete": {
-        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -523,7 +502,6 @@
         }
       },
       "put": {
-        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -578,7 +556,6 @@
     },
     "/product/create": {
       "post": {
-        "tags": ["Product"],
         "description": "",
         "parameters": [
           {
@@ -630,38 +607,18 @@
     },
     "/post/": {
       "get": {
-        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
+            "type": "string"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/post/search": {
-      "get": {
-        "tags": ["Post"],
-        "description": "",
-        "parameters": [
           {
             "name": "title",
             "in": "query",
@@ -683,7 +640,6 @@
     },
     "/post/{id}": {
       "get": {
-        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -706,7 +662,6 @@
         }
       },
       "put": {
-        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -750,7 +705,6 @@
         }
       },
       "delete": {
-        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -778,7 +732,6 @@
     },
     "/post/create": {
       "post": {
-        "tags": ["Post"],
         "description": "",
         "parameters": [
           {
@@ -818,18 +771,17 @@
     },
     "/order/": {
       "get": {
-        "tags": ["Order"],
         "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "query",
-            "type": "number"
+            "type": "string"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "number"
+            "type": "string"
           }
         ],
         "responses": {
@@ -850,7 +802,6 @@
     },
     "/order/{id}": {
       "get": {
-        "tags": ["Order"],
         "description": "",
         "parameters": [
           {
@@ -878,7 +829,9 @@
     },
     "/order/create": {
       "post": {
-        "tags": ["Order"],
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -959,7 +912,14 @@
   "definitions": {
     "User": {
       "title": "user",
-      "required": ["username", "name", "phone", "email", "address", "password"],
+      "required": [
+        "username",
+        "name",
+        "phone",
+        "email",
+        "address",
+        "password"
+      ],
       "properties": {
         "username": {
           "type": "string"
@@ -1042,7 +1002,10 @@
         },
         "status": {
           "type": "string",
-          "enum": ["AVAILABLE", "EXPIRE"]
+          "enum": [
+            "AVAILABLE",
+            "EXPIRE"
+          ]
         },
         "comments": {
           "type": "array",
@@ -1065,7 +1028,11 @@
     },
     "Post": {
       "title": "post",
-      "required": ["title", "productId", "image"],
+      "required": [
+        "title",
+        "productId",
+        "image"
+      ],
       "properties": {
         "title": {
           "type": "string"
@@ -1123,7 +1090,13 @@
                 "type": "schemaobjectid"
               }
             },
-            "required": ["name", "image", "amount", "price", "productId"]
+            "required": [
+              "name",
+              "image",
+              "amount",
+              "price",
+              "productId"
+            ]
           }
         },
         "userId": {

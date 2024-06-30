@@ -19,7 +19,7 @@ const doc = {
     title: "FMilk Web API",
     description: "API Documentation for FMilk Web",
   },
-  host: "fmilk-server.onrender.com",
+  host: "localhost:8000",
   basePath: "/api/v1",
   securityDefinitions: {
     BearerAuth: {
