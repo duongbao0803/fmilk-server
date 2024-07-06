@@ -21,4 +21,22 @@ router.put(
   productController.updateProduct
 );
 
+router.post(
+  "/:productId/comment",
+  middlewareController.verifyTokenCustomer,
+  productController.addNewComment
+);
+
+router.delete(
+  "/:productId/comment/:commentId",
+  middlewareController.verifyToken,
+  productController.deleteComment
+);
+
+router.put(
+  "/:productId/comment/:commentId",
+  middlewareController.verifyToken,
+  productController.editComment
+);
+
 module.exports = router;

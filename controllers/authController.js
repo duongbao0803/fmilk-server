@@ -106,8 +106,10 @@ const authController = {
   },
 
   generateRefreshToken: (user) => {
+    const jti = uuid.v4();
     return jwt.sign(
       {
+        jti: jti,
         id: user.id,
         role: user.role,
       },

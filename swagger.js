@@ -5,6 +5,7 @@ const User = require("./models/user.js");
 const Product = require("./models/product.js");
 const Post = require("./models/post.js");
 const Order = require("./models/order.js");
+const Brand = require("./models/brand.js");
 
 const outputFile = "./swagger-output.json";
 const routes = ["./routes/routes.js"];
@@ -12,6 +13,7 @@ const routes = ["./routes/routes.js"];
 const userDefinition = modelToSwagger(User);
 const productDefinition = modelToSwagger(Product);
 const postDefinition = modelToSwagger(Post);
+const brandDefinition = modelToSwagger(Brand);
 const orderDefinition = modelToSwagger(Order);
 
 const doc = {
@@ -19,7 +21,7 @@ const doc = {
     title: "FMilk Web API",
     description: "API Documentation for FMilk Web",
   },
-  host: "localhost:8000",
+  host: "fmilk-server.onrender.com",
   basePath: "/api/v1",
   securityDefinitions: {
     BearerAuth: {
@@ -38,6 +40,7 @@ const doc = {
     User: userDefinition,
     Product: productDefinition,
     Post: postDefinition,
+    Brand: brandDefinition,
     Order: orderDefinition,
   },
 };
@@ -49,6 +52,7 @@ if (fs.existsSync(outputFile)) {
   existingSwaggerData.definitions.User = userDefinition;
   existingSwaggerData.definitions.Product = productDefinition;
   existingSwaggerData.definitions.Post = postDefinition;
+  existingSwaggerData.definitions.Brand = brandDefinition;
   existingSwaggerData.definitions.Order = orderDefinition;
 
   fs.writeFileSync(outputFile, JSON.stringify(existingSwaggerData, null, 2));

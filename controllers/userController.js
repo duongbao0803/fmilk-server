@@ -357,7 +357,13 @@ const userController = {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(newPassword, salt);
       user.password = hashed;
-      await user.save();
+      const updateUser = await user.save();
+      if (updateUser) {
+        return res.status(200).json({
+          message: "Change password successful",
+          status: 200,
+        });
+      }
     } catch (err) {
       return res.status(400).json(err);
     }
