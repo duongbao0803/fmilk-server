@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-const Post = require("../models/post");
+const Brand = require("../models/brand");
 const Product = require("../models/product");
 
-const postController = {
-  getAllPost: async (req, res) => {
+const brandController = {
+  getAllBrand: async (req, res) => {
     try {
-      let { page, pageSize, title } = req.query;
+      let { page, pageSize, brandName } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -25,105 +25,100 @@ const postController = {
       }
 
       const skip = (page - 1) * pageSize;
-
       let query = {};
-
-      if (title) {
-        query.title = { $regex: title, $options: "i" };
+      if (brandName) {
+        query.brandName = { $regex: brandName, $options: "i" };
       }
 
-      const posts = await Post.find(query).skip(skip).limit(pageSize);
-      const totalCount = await Post.countDocuments(query);
+      const brands = await Brand.find(query).skip(skip).limit(pageSize);
+      const totalCount = await Brand.countDocuments(query);
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Not found post",
+          message: "Not found brand",
           status: 404,
         });
       }
 
       return res.status(200).json({
-        posts,
+        brands,
         currentPage: page,
         totalPages: Math.ceil(totalCount / pageSize),
-        totalPosts: totalCount,
+        totalbrands: totalCount,
       });
     } catch (err) {
       return res.status(400).json(err);
     }
   },
 
-  getDetailPost: async (req, res) => {
+  getDetailBrand: async (req, res) => {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "Invalid brand ID",
           status: 400,
         });
       }
 
-      const postInfo = await Post.findById(req.params.id);
-      if (!postInfo) {
+      const brandInfo = await Brand.findById(req.params.id);
+      if (!brandInfo) {
         return res.status(404).json({
-          message: "Not found post",
+          message: "Not found brand",
           status: 404,
         });
       }
 
-      res.status(200).json({ postInfo });
+      return res.status(200).json({ brandInfo });
     } catch (err) {
-      res.status(400).json(err);
+      return res.status(400).json(err);
     }
   },
 
-  addPost: async (req, res) => {
+  addNewBrand: async (req, res) => {
+    const { brandName } = req.body;
     try {
-      const { title, description, image, productId } = req.body;
-
-      if (!title || !description || !image || !productId) {
+      if (!brandName) {
         return res.status(400).json({
-          message: "All fields must be required",
+          message: "Input must be required",
           status: 400,
         });
       }
 
-      if (!ObjectId.isValid(req.body.productId)) {
-        return res.status(400).json({
-          message: "Invalid product ID",
-          status: 400,
-        });
-      }
-
-      const post = await Post.create({
-        title,
-        description,
-        image,
-        productId,
-      });
-
+      const newBrand = await Brand.create(req.body);
       return res.status(200).json({
-        message: "Add Successful",
+        message: "Add new brand successful",
         status: 200,
-        post,
+        newBrand,
       });
     } catch (err) {
       return res.status(400).json(err);
     }
   },
 
-  deletePost: async (req, res) => {
+  deleteBrand: async (req, res) => {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid post ID",
+          message: "Invalid brand ID",
           status: 400,
         });
       }
 
-      const post = await Post.findByIdAndDelete(req.params.id);
-      if (!post) {
+      const brandInProduct = await Product.findOne({
+        brand: req.params.id,
+      });
+
+      if (brandInProduct) {
+        return res.status(400).json({
+          message: "Cannot delete brand. It still exist in product",
+          status: 400,
+        });
+      }
+
+      const brand = await Brand.findByIdAndDelete(req.params.id);
+      if (!brand) {
         return res.status(404).json({
-          message: "Not found post",
+          message: "Not found brand",
           status: 404,
         });
       }
@@ -137,43 +132,35 @@ const postController = {
     }
   },
 
-  updatePost: async (req, res) => {
-    const { title, description, image, productId } = req.body;
+  updateBrand: async (req, res) => {
+    const { brandName } = req.body;
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid post ID",
+          message: "Invalid brand ID",
           status: 400,
         });
       }
 
-      if (!title || !description || !image) {
+      if (!brandName) {
         return res.status(400).json({
-          message: "All fields must be required",
+          message: "Input must be required",
           status: 400,
         });
       }
 
-      const post = await Post.findByIdAndUpdate(
+      const brand = await Brand.findByIdAndUpdate(
         req.params.id,
         {
-          title,
-          image,
-          description,
-          productId,
+          brandName,
         },
         { new: true }
       );
-      if (post) {
+      if (brand) {
         return res.status(200).json({
           message: "Update Successful",
           status: 200,
-        });
-      } else {
-        return res.status(400).json({
-          message: "Update failed",
-          status: 400,
         });
       }
     } catch (err) {
@@ -182,4 +169,4 @@ const postController = {
   },
 };
 
-module.exports = postController;
+module.exports = brandController;

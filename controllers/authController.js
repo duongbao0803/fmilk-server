@@ -2,6 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const uuid = require("uuid");
 dotenv.config();
 
 let refreshTokens = [];
@@ -92,8 +93,10 @@ const authController = {
   },
 
   generateAccessToken: (user) => {
+    const jti = uuid.v4();
     return jwt.sign(
       {
+        jti: jti,
         id: user.id,
         role: user.role,
       },
@@ -103,8 +106,10 @@ const authController = {
   },
 
   generateRefreshToken: (user) => {
+    const jti = uuid.v4();
     return jwt.sign(
       {
+        jti: jti,
         id: user.id,
         role: user.role,
       },

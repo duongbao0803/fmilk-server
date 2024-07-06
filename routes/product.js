@@ -4,7 +4,6 @@ const middlewareController = require("../middleware/verifyToken");
 const router = require("express").Router();
 
 router.get("/", productController.getAllProduct);
-router.get("/search", productController.searchProduct);
 router.get("/:id", productController.getDetailProduct);
 router.post(
   "/create",
@@ -20,6 +19,24 @@ router.put(
   "/:id",
   middlewareController.verifyAuthorityPermission,
   productController.updateProduct
+);
+
+router.post(
+  "/:productId/comment",
+  middlewareController.verifyTokenCustomer,
+  productController.addNewComment
+);
+
+router.delete(
+  "/:productId/comment/:commentId",
+  middlewareController.verifyToken,
+  productController.deleteComment
+);
+
+router.put(
+  "/:productId/comment/:commentId",
+  middlewareController.verifyToken,
+  productController.editComment
 );
 
 module.exports = router;

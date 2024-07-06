@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Product = require("../models/product");
 const Post = require("../models/post");
+const User = require("../models/user");
 
 const productController = {
   getAllProduct: async (req, res) => {
     try {
-      let { page, pageSize } = req.query;
+      let { page, pageSize, productName, origin } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -25,8 +26,18 @@ const productController = {
       }
 
       const skip = (page - 1) * pageSize;
-      const products = await Product.find().skip(skip).limit(pageSize);
-      const totalCount = await Product.countDocuments();
+
+      let query = {};
+      if (productName) {
+        query.name = { $regex: productName, $options: "i" };
+      }
+
+      if (origin) {
+        query.origin = origin;
+      }
+
+      const products = await Product.find(query).skip(skip).limit(pageSize);
+      const totalCount = await Product.countDocuments(query);
 
       if (skip >= totalCount) {
         return res.status(404).json({
@@ -69,23 +80,6 @@ const productController = {
     }
   },
 
-  searchProduct: async (req, res) => {
-    try {
-      const { productName } = req.query;
-      const products = await Product.find({
-        name: { $regex: productName, $options: "i" },
-      });
-
-      if (products.length === 0) {
-        return res.status(404).json({ message: "Not found product" });
-      }
-
-      return res.status(200).json(products);
-    } catch (err) {
-      return res.status(400).json(err);
-    }
-  },
-
   addProduct: async (req, res) => {
     try {
       const {
@@ -102,9 +96,16 @@ const productController = {
       const inputExpireDate = new Date(expireDate);
       const existingProduct = await Product.findOne({ name });
 
+      if (!ObjectId.isValid(brand)) {
+        return res.status(400).json({
+          message: "Invalid brand ID",
+          status: 400,
+        });
+      }
+
       if (
         !name ||
-        !expireDate ||
+        !inputExpireDate ||
         !quantity ||
         !price ||
         !image ||
@@ -139,7 +140,16 @@ const productController = {
         });
       }
 
-      const newProduct = Product.create(req.body);
+      const newProduct = Product.create({
+        name,
+        expireDate: inputExpireDate,
+        quantity,
+        price,
+        image,
+        description,
+        origin,
+        brand,
+      });
       return res.status(200).json(newProduct);
     } catch (err) {
       return res.status(400).json(err);
@@ -254,6 +264,167 @@ const productController = {
     } catch (err) {
       console.log("check err", err);
       return res.status(400).json(err);
+    }
+  },
+
+  //Comments
+  addNewComment: async (req, res) => {
+    const { rating, content } = req.body;
+    console.log("check body", req.body);
+
+    try {
+      if (!ObjectId.isValid(req.params.productId)) {
+        return res.status(400).json({
+          message: "Invalid product ID",
+          status: 400,
+        });
+      }
+
+      const product = await Product.findById(req.params.productId);
+      console.log("checkl product", product);
+      if (!product) {
+        return res.status(404).json({
+          message: "Not found product",
+          status: 404,
+        });
+      }
+
+      const existingComment = await Product.findOne({
+        _id: req.params.productId,
+        "comments.author": req.user.id,
+      });
+
+      if (existingComment) {
+        return res.status(404).json({
+          message: "User can only comment once on each product",
+          status: 404,
+        });
+      }
+
+      const user = await User.findById(req.user.id);
+
+      const newComment = {
+        rating: rating,
+        content: content,
+        author: user._id,
+      };
+
+      product.comments.push(newComment);
+      await product.save();
+
+      return res.status(200).json(product.comments);
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  },
+
+  deleteComment: async (req, res) => {
+    const { productId, commentId } = req.params;
+    console.log("check id", productId);
+    console.log("check commentId", commentId);
+
+    try {
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({
+          message: "Not found product",
+          status: 404,
+        });
+      }
+
+      const comment = product.comments.id(commentId);
+
+      console.log("check", req.user.role);
+
+      if (!comment) {
+        return res.status(404).json({
+          message: "Not found comment",
+          status: 404,
+        });
+      }
+
+      if (
+        comment.author.toString() !== req.user.id.toString() &&
+        req.user.role !== "ADMIN" &&
+        req.user.role !== "STAFF"
+      ) {
+        return res.status(403).json({
+          message: "You don't have permission to delete comment",
+          status: 403,
+        });
+      }
+
+      product.comments.pull(comment._id);
+      await product.save();
+
+      return res.status(200).json({
+        message: "Delete comment successful",
+        status: 200,
+      });
+    } catch (err) {
+      return res.status(400).json(err);
+    }
+  },
+
+  editComment: async (req, res) => {
+    const { productId, commentId } = req.params;
+    const { rating, content } = req.body;
+
+    if (!rating || !content) {
+      return res.status(400).json({
+        message: "All fields must be required",
+        status: 400,
+      });
+    }
+
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({
+        message: "Rating must be between 1 and 5",
+        status: 400,
+      });
+    }
+
+    if (content.length < 8) {
+      return res.status(400).json({
+        message: "Content must be at least 8 characters",
+        status: 400,
+      });
+    }
+
+    try {
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({
+          message: "Not found product",
+          status: 400,
+        });
+      }
+
+      const comment = product.comments.id(commentId);
+      if (!comment) {
+        return res.status(404).json({
+          message: "Not found comment",
+          status: 400,
+        });
+      }
+
+      if (comment.author.toString() !== req.user.id.toString()) {
+        return res.status(403).json({
+          message: "You don't have permission to edit comment",
+          status: 403,
+        });
+      }
+
+      comment.content = content;
+      comment.rating = rating;
+
+      await product.save();
+      return res.status(200).json({
+        message: "Edit comment successful",
+        status: 200,
+      });
+    } catch (err) {
+      return res.status(400).send(err);
     }
   },
 };
