@@ -23,7 +23,7 @@ router.put(
 
 router.post(
   "/:productId/comment",
-  middlewareController.verifyTokenCustomer,
+  middlewareController.verifyTokenMember,
   productController.addNewComment
 );
 

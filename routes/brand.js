@@ -4,20 +4,24 @@ const middlewareController = require("../middleware/verifyToken");
 const router = require("express").Router();
 
 router.get("/", brandController.getAllBrand);
-router.get("/:id", brandController.getDetailBrand);
+router.get(
+  "/:id",
+  middlewareController.verifyAuthorityPermission,
+  brandController.getDetailBrand
+);
 router.post(
   "/create",
-  middlewareController.verifyTokenAdmin,
+  middlewareController.verifyAuthorityPermission,
   brandController.addNewBrand
 );
 router.delete(
   "/:id",
-  middlewareController.verifyTokenAdmin,
+  middlewareController.verifyAuthorityPermission,
   brandController.deleteBrand
 );
 router.put(
   "/:id",
-  middlewareController.verifyTokenAdmin,
+  middlewareController.verifyAuthorityPermission,
   brandController.updateBrand
 );
 
