@@ -198,7 +198,7 @@ const orderController = {
       });
 
       return res.status(200).json({
-        message: "Create order successful",
+        message: "Create order successfull",
         status: 200,
       });
     } catch (err) {
