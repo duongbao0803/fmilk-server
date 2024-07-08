@@ -2,6 +2,14 @@ const orderController = require("../controllers/orderController");
 const middlewareController = require("../middleware/verifyToken");
 const router = require("express").Router();
 
+router.get("/vnpay_return", orderController.returnVnpay);
+
+router.get(
+  "/getByUser",
+  middlewareController.verifyTokenMember,
+  orderController.getOrderListByUserId
+);
+
 router.get(
   "/",
   middlewareController.verifyTokenAdmin,

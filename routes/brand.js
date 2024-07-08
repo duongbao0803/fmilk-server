@@ -1,29 +1,28 @@
-const authController = require("../controllers/authController");
-const postController = require("../controllers/postController");
+const brandController = require("../controllers/brandController");
 const middlewareController = require("../middleware/verifyToken");
 
 const router = require("express").Router();
 
-router.get("/", postController.getAllPost);
-
-router.get("/:id", postController.getDetailPost);
-
+router.get("/", brandController.getAllBrand);
+router.get(
+  "/:id",
+  middlewareController.verifyAuthorityPermission,
+  brandController.getDetailBrand
+);
 router.post(
   "/create",
   middlewareController.verifyAuthorityPermission,
-  postController.addPost
+  brandController.addNewBrand
 );
-
-router.put(
-  "/:id",
-  middlewareController.verifyAuthorityPermission,
-  postController.updatePost
-);
-
 router.delete(
   "/:id",
   middlewareController.verifyAuthorityPermission,
-  postController.deletePost
+  brandController.deleteBrand
+);
+router.put(
+  "/:id",
+  middlewareController.verifyAuthorityPermission,
+  brandController.updateBrand
 );
 
 module.exports = router;

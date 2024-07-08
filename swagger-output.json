@@ -7,7 +7,9 @@
   },
   "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
-  "schemes": ["https"],
+  "schemes": [
+    "https"
+  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -19,7 +21,9 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "responses": {
           "200": {
@@ -36,7 +40,9 @@
     },
     "/auth/register": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -82,7 +88,9 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -119,7 +127,9 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -147,7 +157,9 @@
     },
     "/user/": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -159,31 +171,14 @@
             "name": "pageSize",
             "in": "query",
             "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/user/search": {
-      "get": {
-        "tags": ["User"],
-        "description": "",
-        "parameters": [
           {
             "name": "name",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "role",
             "in": "query",
             "type": "string"
           }
@@ -206,7 +201,9 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -232,7 +229,9 @@
         }
       },
       "delete": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -258,7 +257,9 @@
         }
       },
       "put": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -283,7 +284,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "any"
+                  "example": "YYYY/MM/DD"
                 }
               }
             }
@@ -307,7 +308,9 @@
     },
     "/user/personal-information": {
       "put": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -326,7 +329,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "any"
+                  "example": "YYYY/MM/DD"
                 }
               }
             }
@@ -347,7 +350,9 @@
     },
     "/user/change-password": {
       "put": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -367,6 +372,9 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "400": {
             "description": "Bad Request"
           },
@@ -381,7 +389,9 @@
     },
     "/user/status/{id}": {
       "patch": {
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -421,7 +431,9 @@
     },
     "/product/": {
       "get": {
-        "tags": ["Product"],
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -433,28 +445,14 @@
             "name": "pageSize",
             "in": "query",
             "type": "number"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/product/search": {
-      "get": {
-        "tags": ["Product"],
-        "description": "",
-        "parameters": [
           {
             "name": "productName",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "origin",
             "in": "query",
             "type": "string"
           }
@@ -474,7 +472,9 @@
     },
     "/product/{id}": {
       "get": {
-        "tags": ["Product"],
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -497,7 +497,9 @@
         }
       },
       "delete": {
-        "tags": ["Product"],
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -523,7 +525,9 @@
         }
       },
       "put": {
-        "tags": ["Product"],
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -548,10 +552,10 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "origin": {
                   "example": "any"
@@ -578,7 +582,9 @@
     },
     "/product/create": {
       "post": {
-        "tags": ["Product"],
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -591,13 +597,13 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "any"
+                  "example": "YYYY/MM/DD"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "image": {
                   "example": "any"
@@ -628,9 +634,147 @@
         }
       }
     },
-    "/post/": {
+    "/product/{productId}/comment": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/product/{productId}/comment/{commentId}": {
+      "delete": {
+        "tags": [
+          "Product"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Product"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "rating": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/brand/": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
           {
@@ -640,6 +784,11 @@
           },
           {
             "name": "pageSize",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "brandName",
             "in": "query",
             "type": "number"
           }
@@ -657,11 +806,151 @@
         }
       }
     },
-    "/post/search": {
+    "/brand/{id}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Brand"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Brand"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "brandName": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/brand/create": {
+      "post": {
+        "tags": [
+          "Brand"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "brandName": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/post/": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "number"
+          },
           {
             "name": "title",
             "in": "query",
@@ -683,7 +972,9 @@
     },
     "/post/{id}": {
       "get": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -706,7 +997,9 @@
         }
       },
       "put": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -750,7 +1043,9 @@
         }
       },
       "delete": {
-        "tags": ["Post"],
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -776,49 +1071,11 @@
         }
       }
     },
-    "/post/create": {
-      "post": {
-        "tags": ["Post"],
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "productId": {
-                  "example": "any"
-                },
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "image": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
     "/order/": {
       "get": {
-        "tags": ["Order"],
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -850,7 +1107,9 @@
     },
     "/order/{id}": {
       "get": {
-        "tags": ["Order"],
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -876,9 +1135,100 @@
         }
       }
     },
+    "/post/create": {
+      "post": {
+        "tags": [
+          "Post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "example": "any"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "image": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/order/vnpay_return": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/order/getByUser": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/order/create": {
       "post": {
-        "tags": ["Order"],
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -933,7 +1283,7 @@
                   "example": 10
                 },
                 "totalPrice": {
-                  "example": 10
+                  "example": 10000
                 }
               }
             }
@@ -959,7 +1309,14 @@
   "definitions": {
     "User": {
       "title": "user",
-      "required": ["username", "name", "phone", "email", "address", "password"],
+      "required": [
+        "username",
+        "name",
+        "phone",
+        "email",
+        "address",
+        "password"
+      ],
       "properties": {
         "username": {
           "type": "string"
@@ -1011,7 +1368,6 @@
         "quantity",
         "price",
         "origin",
-        "brand",
         "expireDate"
       ],
       "properties": {
@@ -1024,6 +1380,35 @@
         "description": {
           "type": "string"
         },
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rating": {
+                "type": "number"
+              },
+              "content": {
+                "type": "string"
+              },
+              "author": {
+                "type": "schemaobjectid"
+              },
+              "_id": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": []
+          }
+        },
         "quantity": {
           "type": "number"
         },
@@ -1033,22 +1418,19 @@
         "origin": {
           "type": "string"
         },
-        "brand": {
-          "type": "string"
-        },
         "expireDate": {
           "type": "string",
           "format": "date-time"
         },
         "status": {
           "type": "string",
-          "enum": ["AVAILABLE", "EXPIRE"]
+          "enum": [
+            "AVAILABLE",
+            "EXPIRE"
+          ]
         },
-        "comments": {
-          "type": "array",
-          "items": {
-            "type": "schemaobjectid"
-          }
+        "brand": {
+          "type": "schemaobjectid"
         },
         "_id": {
           "type": "string"
@@ -1065,7 +1447,11 @@
     },
     "Post": {
       "title": "post",
-      "required": ["title", "productId", "image"],
+      "required": [
+        "title",
+        "productId",
+        "image"
+      ],
       "properties": {
         "title": {
           "type": "string"
@@ -1078,6 +1464,25 @@
           "type": "schemaobjectid"
         },
         "image": {
+          "type": "string"
+        },
+        "_id": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Brand": {
+      "title": "brand",
+      "properties": {
+        "brandName": {
           "type": "string"
         },
         "_id": {
@@ -1123,7 +1528,13 @@
                 "type": "schemaobjectid"
               }
             },
-            "required": ["name", "image", "amount", "price", "productId"]
+            "required": [
+              "name",
+              "image",
+              "amount",
+              "price",
+              "productId"
+            ]
           }
         },
         "userId": {

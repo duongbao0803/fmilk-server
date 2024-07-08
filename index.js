@@ -38,11 +38,20 @@ cron.schedule("0 0 * * *", async () => {
       expireDate: { $lt: new Date() },
       status: "AVAILABLE",
     });
-    for (const product of products) {
-      product.status = "EXPIRED";
-      await product.save();
+
+    if (products.length > 0) {
+      const bulkOps = products.map((product) => ({
+        updateOne: {
+          filter: { _id: product._id },
+          update: { status: "EXPIRE" },
+        },
+      }));
+
+      await Product.bulkWrite(bulkOps);
+      console.log("Update product success");
+    } else {
+      console.log("No products to update");
     }
-    console.log("Update product success");
   } catch (error) {
     console.error("Error updating product", error);
   }
