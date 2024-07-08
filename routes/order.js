@@ -20,4 +20,10 @@ router.post(
   orderController.createOrder
 );
 
+router.get(
+  "/vnpay_return",
+  middlewareController.verifyTokenCustomer,
+  orderController.returnVnpay
+);
+
 module.exports = router;
