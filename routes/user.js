@@ -8,11 +8,6 @@ router.get(
   middlewareController.verifyTokenAdmin,
   userController.getAllUser
 );
-router.get(
-  "/search",
-  middlewareController.verifyTokenAdmin,
-  userController.searchUser
-);
 
 router.get(
   "/:id",
