@@ -284,7 +284,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "2024-07-07"
+                  "example": "YYYY/MM/DD"
                 }
               }
             }
@@ -329,7 +329,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "2024-07-07"
+                  "example": "YYYY/MM/DD"
                 }
               }
             }
@@ -372,6 +372,9 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
           "400": {
             "description": "Bad Request"
           },
@@ -594,7 +597,7 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "2024-07-07"
+                  "example": "YYYY/MM/DD"
                 },
                 "quantity": {
                   "example": 10
@@ -634,7 +637,7 @@
     "/product/{productId}/comment": {
       "post": {
         "tags": [
-          "Comment"
+          "Product"
         ],
         "description": "",
         "parameters": [
@@ -679,7 +682,7 @@
     "/product/{productId}/comment/{commentId}": {
       "delete": {
         "tags": [
-          "Comment"
+          "Product"
         ],
         "description": "",
         "parameters": [
@@ -716,7 +719,7 @@
       },
       "put": {
         "tags": [
-          "Comment"
+          "Product"
         ],
         "description": "",
         "parameters": [
@@ -787,7 +790,7 @@
           {
             "name": "brandName",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -823,6 +826,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -1065,48 +1071,6 @@
         }
       }
     },
-    "/post/create": {
-      "post": {
-        "tags": [
-          "Post"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "productId": {
-                  "example": "any"
-                },
-                "title": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "image": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
     "/order/": {
       "get": {
         "tags": [
@@ -1153,6 +1117,95 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/post/create": {
+      "post": {
+        "tags": [
+          "Post"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "example": "any"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "image": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/order/vnpay_return": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/order/getByUser": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "type": "number"
           }
         ],
         "responses": {
@@ -1230,7 +1283,7 @@
                   "example": 10
                 },
                 "totalPrice": {
-                  "example": 10
+                  "example": 10000
                 }
               }
             }

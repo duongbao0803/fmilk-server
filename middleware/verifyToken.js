@@ -85,7 +85,7 @@ const middlewareController = {
 
   verifyTokenMember: (req, res, next) => {
     middlewareController.verifyToken(req, res, () => {
-      if (req.member.isAdmin === false) {
+      if (req.user.role === "MEMBER") {
         next();
       } else {
         return res.status(403).json({
