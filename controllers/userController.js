@@ -144,8 +144,11 @@ const userController = {
     const id = req.params.id;
     const { name, phone, address, dob } = req.body;
     const myRole = req.user.role;
+    const date = new Date();
     const targetUser = await User.findById(id);
     const existingPhoneUser = await User.findOne({ phone });
+
+    console.log("check date", date);
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -183,6 +186,15 @@ const userController = {
         });
       }
 
+      const dobDate = new Date(dob);
+
+      if (dobDate >= date) {
+        return res.status(400).json({
+          message: "Date of birth must be in the past",
+          status: 400,
+        });
+      }
+
       if (
         (myRole === "MEMBER" && targetUser.role !== "MEMBER") ||
         (myRole === "STAFF" && targetUser.role !== "STAFF")
@@ -199,7 +211,7 @@ const userController = {
           name,
           phone,
           address,
-          dob,
+          dob: dobDate,
         },
         { new: true }
       );
@@ -263,6 +275,7 @@ const userController = {
   editInfoPersonal: async (req, res) => {
     const userId = req.user.id;
     const { name, phone, address, dob } = req.body;
+    const date = new Date();
     const existingPhoneUser = await User.findOne({ phone });
 
     try {
@@ -301,13 +314,22 @@ const userController = {
         });
       }
 
+      const dobDate = new Date(dob);
+
+      if (dobDate >= date) {
+        return res.status(400).json({
+          message: "Date of birth must be in the past",
+          status: 400,
+        });
+      }
+
       const user = await User.findByIdAndUpdate(
         userId,
         {
           name,
           phone,
           address,
-          dob,
+          dob: dobDate,
         },
         { new: true }
       );

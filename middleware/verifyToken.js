@@ -39,7 +39,7 @@ const middlewareController = {
 
   verifyTokenAdmin: (req, res, next) => {
     middlewareController.verifyToken(req, res, () => {
-      if (req.user.id === req.params.id || req.user.role === "ADMIN") {
+      if (req.user.role === "ADMIN") {
         next();
       } else {
         res.status(403).json({
@@ -52,11 +52,7 @@ const middlewareController = {
 
   verifyAuthorityPermission: (req, res, next) => {
     middlewareController.verifyToken(req, res, () => {
-      if (
-        req.user.id === req.params.id ||
-        req.user.role === "ADMIN" ||
-        req.user.role === "STAFF"
-      ) {
+      if (req.user.role === "ADMIN" || req.user.role === "STAFF") {
         next();
       } else {
         res.status(403).json({
