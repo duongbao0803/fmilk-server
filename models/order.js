@@ -66,16 +66,17 @@ const orderSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
+    status: {
+      type: String,
+      enum: ["PENDING", "DELIVERING", "DELIVERED"],
+      default: "PENDING",
+    },
     isPaid: {
       type: Boolean,
       default: false,
     },
     paidAt: {
       type: Date,
-    },
-    isDelivered: {
-      type: Boolean,
-      default: false,
     },
     deliveredAt: {
       type: Date,

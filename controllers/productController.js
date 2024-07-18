@@ -3,6 +3,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const Product = require("../models/product");
 const Post = require("../models/post");
 const User = require("../models/user");
+const Brand = require("../models/brand");
 
 const productController = {
   getAllProduct: async (req, res) => {
@@ -33,10 +34,17 @@ const productController = {
       }
 
       if (origin) {
-        query.origin = origin;
+        const brands = await Brand.find({
+          origin: { $regex: origin, $options: "i" },
+        });
+        const brandIds = brands.map((brand) => brand._id);
+        query.brand = { $in: brandIds };
       }
 
-      const products = await Product.find(query).skip(skip).limit(pageSize);
+      const products = await Product.find(query)
+        .skip(skip)
+        .limit(pageSize)
+        .populate("brand");
       const totalCount = await Product.countDocuments(query);
 
       if (skip >= totalCount) {
@@ -84,16 +92,8 @@ const productController = {
 
   addProduct: async (req, res) => {
     try {
-      const {
-        name,
-        expireDate,
-        quantity,
-        price,
-        image,
-        description,
-        origin,
-        brand,
-      } = req.body;
+      const { name, expireDate, quantity, price, image, description, brand } =
+        req.body;
       const currentDate = new Date();
       const inputExpireDate = new Date(expireDate);
       const existingProduct = await Product.findOne({ name });
@@ -112,7 +112,6 @@ const productController = {
         !price ||
         !image ||
         !description ||
-        !origin ||
         !brand
       ) {
         return res.status(400).json({
@@ -149,7 +148,6 @@ const productController = {
         price,
         image,
         description,
-        origin,
         brand,
       });
       return res.status(200).json(newProduct);
@@ -196,8 +194,7 @@ const productController = {
   },
 
   updateProduct: async (req, res) => {
-    const { name, image, description, quantity, price, origin, brand } =
-      req.body;
+    const { name, image, description, quantity, price, brand } = req.body;
     const existingProduct = await Product.findOne({
       name,
       _id: { $ne: req.params.id },
@@ -218,15 +215,7 @@ const productController = {
         });
       }
 
-      if (
-        !name ||
-        !image ||
-        !description ||
-        !quantity ||
-        !price ||
-        !origin ||
-        !brand
-      ) {
+      if (!name || !image || !description || !quantity || !price || !brand) {
         return res.status(400).json({
           message: "All fields must be required",
           status: 400,
@@ -248,7 +237,6 @@ const productController = {
           quantity,
           price,
           brand,
-          origin,
         },
         { new: true }
       );

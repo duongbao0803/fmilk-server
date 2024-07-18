@@ -6,7 +6,7 @@ const Product = require("../models/product");
 const brandController = {
   getAllBrand: async (req, res) => {
     try {
-      let { page, pageSize, brandName } = req.query;
+      let { page, pageSize, brandName, origin } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -28,6 +28,9 @@ const brandController = {
       let query = {};
       if (brandName) {
         query.brandName = { $regex: brandName, $options: "i" };
+      }
+      if (origin) {
+        query.origin = { $regex: origin, $options: "i" };
       }
 
       const brands = await Brand.find(query).skip(skip).limit(pageSize);
@@ -75,9 +78,9 @@ const brandController = {
   },
 
   addNewBrand: async (req, res) => {
-    const { brandName } = req.body;
+    const { brandName, origin } = req.body;
     try {
-      if (!brandName) {
+      if (!brandName || !origin) {
         return res.status(400).json({
           message: "Input must be required",
           status: 400,
@@ -133,7 +136,7 @@ const brandController = {
   },
 
   updateBrand: async (req, res) => {
-    const { brandName } = req.body;
+    const { brandName, origin } = req.body;
 
     try {
       if (!ObjectId.isValid(req.params.id)) {
@@ -143,7 +146,7 @@ const brandController = {
         });
       }
 
-      if (!brandName) {
+      if (!brandName || !origin) {
         return res.status(400).json({
           message: "Input must be required",
           status: 400,
@@ -154,6 +157,7 @@ const brandController = {
         req.params.id,
         {
           brandName,
+          origin,
         },
         { new: true }
       );

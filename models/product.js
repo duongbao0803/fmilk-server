@@ -39,10 +39,6 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
-    origin: {
-      type: String,
-      required: true,
-    },
     expireDate: {
       type: Date,
       required: true,
