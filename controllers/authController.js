@@ -11,7 +11,7 @@ const authController = {
     try {
       const user = req.user;
       const info = await User.findById(user.id).select(
-        "_id username phone dob address email role"
+        "_id username phone dob address email role name"
       );
       res.json({ info });
     } catch (err) {
