@@ -325,8 +325,6 @@ const orderController = {
   returnVnpay: async (req, res) => {
     let vnp_Params = req.query;
 
-    console.log("check params", vnp_Params);
-
     let secureHash = vnp_Params["vnp_SecureHash"];
 
     delete vnp_Params["vnp_SecureHash"];
@@ -343,8 +341,13 @@ const orderController = {
 
     if (secureHash === signed) {
       const orderId = vnp_Params["vnp_TxnRef"];
+      const vnp_Amount = parseFloat(vnp_Params["vnp_Amount"]);
+      const vnpay_Params_update = {
+        ...vnp_Params,
+        vnp_Amount: vnp_Amount / 100,
+      };
       const redirectUrl = `http://localhost:3000/payment?${querystring.stringify(
-        vnp_Params
+        vnpay_Params_update
       )}`;
 
       await Order.findOneAndUpdate(
@@ -356,7 +359,7 @@ const orderController = {
       return res.redirect(redirectUrl);
     } else {
       const redirectUrl = `http://localhost:3000/payment?${querystring.stringify(
-        vnp_Params
+        vnpay_Params_update
       )}`;
       return res.redirect(redirectUrl);
     }

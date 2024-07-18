@@ -3,7 +3,14 @@ const Schema = mongoose.Schema;
 
 const brandSchema = new Schema(
   {
-    brandName: String,
+    brandName: {
+      type: String,
+      required: true,
+    },
+    origin: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

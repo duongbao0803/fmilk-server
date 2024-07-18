@@ -65,7 +65,9 @@ const productController = {
           status: 400,
         });
       }
-      const productInfo = await Product.findById(req.params.id);
+      const productInfo = await Product.findById(req.params.id).populate(
+        "brand"
+      );
       if (!productInfo) {
         return res.status(404).json({
           message: "Not found product",

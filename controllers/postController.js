@@ -62,7 +62,7 @@ const postController = {
         });
       }
 
-      const postInfo = await Post.findById(req.params.id);
+      const postInfo = await Post.findById(req.params.id).populate("product");
       if (!postInfo) {
         return res.status(404).json({
           message: "Not found post",
@@ -78,16 +78,16 @@ const postController = {
 
   addPost: async (req, res) => {
     try {
-      const { title, description, image, productId } = req.body;
+      const { title, description, image, product } = req.body;
 
-      if (!title || !description || !image || !productId) {
+      if (!title || !description || !image || !product) {
         return res.status(400).json({
           message: "All fields must be required",
           status: 400,
         });
       }
 
-      if (!ObjectId.isValid(req.body.productId)) {
+      if (!ObjectId.isValid(req.body.product)) {
         return res.status(400).json({
           message: "Invalid product ID",
           status: 400,
@@ -98,7 +98,7 @@ const postController = {
         title,
         description,
         image,
-        productId,
+        product,
       });
 
       return res.status(200).json({
