@@ -31,21 +31,21 @@ const authController = {
 
       if (existingUserByUsername) {
         return res.status(400).json({
-          message: "Username is duplicated",
+          message: "Tên đăng nhập đã tồn tại",
           status: 400,
         });
       }
 
       if (existingUserByPhone) {
         return res.status(400).json({
-          message: "Phone number is duplicated",
+          message: "Số điện thoại đã tồn tại",
           status: 400,
         });
       }
 
       if (existingUserByEmail) {
         return res.status(400).json({
-          message: "Email is duplicated",
+          message: "Email đã tồn tại",
           status: 400,
         });
       }
@@ -53,21 +53,21 @@ const authController = {
       if (/[^a-z0-9]/.test(username)) {
         return res.status(400).json({
           message:
-            "Username cannot contain special characters or uppercase letters",
+            "Tên người dùng không được chứa ký tự đặc biệt hoặc chữ in hoa",
           status: 400,
         });
       }
 
       if (phone.length !== 10) {
         return res.status(400).json({
-          message: "Phone number must be 10 digits",
+          message: "Số điện thoại phải có 10 số",
           status: 400,
         });
       }
 
       if (username.length < 8 || name.length < 8 || password.length < 8) {
         return res.status(400).json({
-          message: "Username, name, and password must be at least 8 characters",
+          message: "Tên đăng nhập, tên và mật khẩu phải có ít nhất 8 ký tự",
           status: 400,
         });
       }
@@ -122,10 +122,9 @@ const authController = {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({ username });
-      console.log("check user", user);
       if (!user) {
         return res.status(404).json({
-          message: "Username or password is invalid",
+          message: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
           status: 404,
         });
       }
@@ -134,14 +133,14 @@ const authController = {
 
       if (!validPassword) {
         return res.status(404).json({
-          message: "Username or password is invalid",
+          message: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
           status: 404,
         });
       }
 
       if (!user.status) {
         return res.status(403).json({
-          message: "Account is not active",
+          message: "Tài khoản đã bị vô hiêu hóa",
           status: 403,
         });
       }
@@ -152,7 +151,7 @@ const authController = {
         refreshTokens.push(refreshToken);
 
         return res.status(200).json({
-          message: "Login Successful",
+          message: "Đăng nhập thành công",
           status: 200,
           accessToken,
           refreshToken,
@@ -169,14 +168,14 @@ const authController = {
 
     if (!refreshToken) {
       return res.status(401).json({
-        message: "Refresh Token is not valid",
+        message: "Refresh Token không hợp lệ",
         status: 401,
       });
     }
 
     if (!refreshTokens.includes(refreshToken)) {
       return res.status(401).json({
-        message: "Refresh Token is not valid",
+        message: "Refresh Token không hợp lệ",
         status: 401,
       });
     }
@@ -184,7 +183,7 @@ const authController = {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
       if (err) {
         return res.status(401).json({
-          message: "Refresh Token is not valid",
+          message: "Refresh Token không hợp lệ",
           status: 401,
         });
       }

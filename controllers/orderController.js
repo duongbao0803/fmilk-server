@@ -37,7 +37,7 @@ const orderController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Not found order",
+          message: "Không tìm thấy đơn hàng",
           status: 404,
         });
       }
@@ -57,7 +57,7 @@ const orderController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid order ID",
+          message: "ID của đơn hàng không hợp lệ",
           status: 400,
         });
       }
@@ -65,7 +65,7 @@ const orderController = {
       const orderInfo = await Order.findById(req.params.id);
       if (!orderInfo) {
         return res.status(404).json({
-          message: "Not found order",
+          message: "Không tìm thấy đơn hàng",
           status: 404,
         });
       }
@@ -80,14 +80,13 @@ const orderController = {
     try {
       let { page, pageSize } = req.query;
       const userId = req.user.id;
-      console.log("check userId", userId);
 
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({
-          message: "Invalid user ID",
+          message: "ID của người dùng không hợp lệ",
           status: 400,
         });
       }
@@ -113,7 +112,7 @@ const orderController = {
 
       if (skip >= totalOrders) {
         return res.status(404).json({
-          message: "Not found order",
+          message: "Không tìm thấy đơn hàng",
           status: 404,
         });
       }
@@ -144,18 +143,16 @@ const orderController = {
       const errors = [];
       const { fullName, address, phone } = transferAddress;
 
-      console.log("Request body:", req.body);
-
       if (!fullName || !address || !phone) {
-        errors.push("All fields in transfer address are required");
+        errors.push("Mọi trường dữ liệu đều bắt buộc");
       }
 
       if (!orderProducts || orderProducts.length === 0) {
-        errors.push("No order product found");
+        errors.push("Không có sản phẩm nào được đặt hàng");
       }
 
       if (!paymentMethod || !itemsPrice || !transferPrice || !totalPrice) {
-        errors.push("All fields in payment are required");
+        errors.push("Mọi trường dữ liệu khi thanh toán đều bắt buộc");
       }
 
       const invalidProducts = orderProducts.filter(
@@ -163,7 +160,7 @@ const orderController = {
       );
 
       if (invalidProducts.length > 0) {
-        errors.push("All fields in order product must be required");
+        errors.push("Mọi trường dữ liệu khi chọn sản phẩm đều bắt buộc");
       }
 
       const orderProductIds = orderProducts.map((product) => product.productId);
@@ -173,7 +170,7 @@ const orderController = {
 
       if (existingProducts.length !== orderProductIds.length) {
         return res.status(404).json({
-          message: "Some products in order not found",
+          message: "Không tìm thấy sản phẩm nào khi đặt hàng",
           status: 404,
         });
       }
@@ -190,13 +187,13 @@ const orderController = {
         user = await User.findById(userId);
         if (!user) {
           return res.status(404).json({
-            message: "Not found user",
+            message: "Không tìm thấy người dùng",
             status: 404,
           });
         }
         if (user.role.includes("STAFF") || user.role.includes("ADMIN")) {
           return res.status(403).json({
-            message: "Admin and Staff don't have permission to order",
+            message: "Admin và quản lý không có quyền đặt hàng",
             status: 403,
           });
         }
@@ -206,7 +203,7 @@ const orderController = {
         orderProducts.map(async (product) => {
           const foundProduct = await Product.findById(product.productId);
           if (!foundProduct) {
-            errors.push("Not found product");
+            errors.push("Không tìm thấy sản phẩm");
           }
           return {
             productId: product.productId,
@@ -223,7 +220,7 @@ const orderController = {
         if (foundProduct.status.includes("AVAILABLE")) {
           if (foundProduct.quantity < product.amount) {
             return res.status(404).json({
-              message: `The product only has ${foundProduct.quantity} left in stock`,
+              message: `Sản phẩm chỉ còn ${foundProduct.quantity} trong kho`,
               status: 404,
             });
           }
@@ -233,7 +230,7 @@ const orderController = {
 
         if (foundProduct.status.includes("EXPIRE")) {
           return res.status(404).json({
-            message: "The product is expired",
+            message: "Sản phẩm đã hết hạn",
             status: 404,
           });
         }
@@ -270,9 +267,6 @@ const orderController = {
           req.socket.remoteAddress ||
           req.connection.socket.remoteAddress;
 
-        console.log("VNPay payment initiated");
-        console.log("IP Address:", ipAddr);
-
         let tmnCode = config.get("vnp_TmnCode");
         let secretKey = config.get("vnp_HashSecret");
         let vnpUrl = config.get("vnp_Url");
@@ -307,12 +301,13 @@ const orderController = {
 
         return res.status(200).json({
           data: vnpUrl,
-          message: "Create order and generate VNPay URL successful",
+          message:
+            "Tạo đơn hàng thành công. Vui lòng chờ chuyển trang thanh toán Vnpay",
           status: 200,
         });
       } else {
         return res.status(200).json({
-          message: "Create order successful",
+          message: "Tạo đơn hàng thành công",
           status: 200,
         });
       }

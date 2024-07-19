@@ -49,7 +49,7 @@ const productController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Not found product",
+          message: "Không tìm thấy sản phẩm",
           status: 404,
         });
       }
@@ -69,7 +69,7 @@ const productController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "ID của sản phẩm không hợp lệ",
           status: 400,
         });
       }
@@ -78,7 +78,7 @@ const productController = {
       );
       if (!productInfo) {
         return res.status(404).json({
-          message: "Not found product",
+          message: "Không tìm thấy sản phẩm",
           status: 404,
         });
       }
@@ -100,7 +100,7 @@ const productController = {
 
       if (!ObjectId.isValid(brand)) {
         return res.status(400).json({
-          message: "Invalid brand ID",
+          message: "ID của thương hiệu không hợp lệ",
           status: 400,
         });
       }
@@ -115,28 +115,28 @@ const productController = {
         !brand
       ) {
         return res.status(400).json({
-          message: "All fields must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
 
       if (existingProduct) {
         return res.status(400).json({
-          message: "Product already exists",
+          message: "Sản phẩm đã tồn tại",
           status: 400,
         });
       }
 
-      if (price < 0 || quantity < 0) {
+      if (price <= 0 || quantity <= 0) {
         return res.status(400).json({
-          message: "Price and quantity must be positive numbers",
+          message: "Giá sản phẩm và số lượng phải là số dương",
           status: 400,
         });
       }
 
       if (inputExpireDate < currentDate) {
         return res.status(400).json({
-          message: "Expire date must be a in future",
+          message: "Ngày hết hạn phải trong tương lai",
           status: 400,
         });
       }
@@ -160,18 +160,18 @@ const productController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "ID của sản phẩm không hợp lệ",
           status: 400,
         });
       }
 
       const postsUsingProduct = await Post.findOne({
-        productId: req.params.id,
+        product: req.params.id,
       });
 
       if (postsUsingProduct) {
         return res.status(400).json({
-          message: "Cannot delete product. It still exist in post",
+          message: "Không thể xóa sản phẩm. Sản phẩm còn nằm trong bài viết",
           status: 400,
         });
       }
@@ -179,13 +179,13 @@ const productController = {
       const product = await Product.findByIdAndDelete(req.params.id);
       if (!product) {
         return res.status(404).json({
-          message: "Not found product",
+          message: "Không tìm thấy sản phẩm",
           status: 404,
         });
       }
 
       return res.status(200).json({
-        message: "Delete Successful",
+        message: "Xóa thành công",
         status: 200,
       });
     } catch (err) {
@@ -203,28 +203,28 @@ const productController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "ID của sản phẩm không hợp lệ",
           status: 400,
         });
       }
 
       if (existingProduct) {
         return res.status(400).json({
-          message: "Product is existed",
+          message: "Sản phẩm đã tồn tại",
           status: 400,
         });
       }
 
       if (!name || !image || !description || !quantity || !price || !brand) {
         return res.status(400).json({
-          message: "All fields must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
 
-      if (price < 0 || quantity < 0) {
+      if (price <= 0 || quantity <= 0) {
         return res.status(400).json({
-          message: "Price, quantity must be positive number",
+          message: "Giá sản phẩm và số lượng phải là số dương",
         });
       }
 
@@ -242,12 +242,12 @@ const productController = {
       );
       if (product) {
         return res.status(200).json({
-          message: "Update Successful",
+          message: "Cập nhật thành công",
           status: 200,
         });
       } else {
         return res.status(400).json({
-          message: "Update failed",
+          message: "Cập nhật thất bại",
           status: 400,
         });
       }
@@ -265,7 +265,7 @@ const productController = {
     try {
       if (!ObjectId.isValid(req.params.productId)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "ID của sản phẩm không hợp lệ",
           status: 400,
         });
       }
@@ -274,7 +274,7 @@ const productController = {
       console.log("checkl product", product);
       if (!product) {
         return res.status(404).json({
-          message: "Not found product",
+          message: "Không tìm thấy sản phẩm",
           status: 404,
         });
       }
@@ -286,7 +286,8 @@ const productController = {
 
       if (existingComment) {
         return res.status(404).json({
-          message: "User can only comment once on each product",
+          message:
+            "Người dùng chỉ được đánh giá và nhận xét 1 lần duy nhất trên mỗi sản phẩm",
           status: 404,
         });
       }
@@ -310,25 +311,21 @@ const productController = {
 
   deleteComment: async (req, res) => {
     const { productId, commentId } = req.params;
-    console.log("check id", productId);
-    console.log("check commentId", commentId);
 
     try {
       const product = await Product.findById(productId);
       if (!product) {
         return res.status(404).json({
-          message: "Not found product",
+          message: "Không tìm thấy sản phẩm",
           status: 404,
         });
       }
 
       const comment = product.comments.id(commentId);
 
-      console.log("check", req.user.role);
-
       if (!comment) {
         return res.status(404).json({
-          message: "Not found comment",
+          message: "Không tìm thấy bình luận",
           status: 404,
         });
       }
@@ -339,7 +336,7 @@ const productController = {
         req.user.role !== "STAFF"
       ) {
         return res.status(403).json({
-          message: "You don't have permission to delete comment",
+          message: "Bạn không có quyền xóa đánh giá này",
           status: 403,
         });
       }
@@ -348,7 +345,7 @@ const productController = {
       await product.save();
 
       return res.status(200).json({
-        message: "Delete comment successful",
+        message: "Xóa đánh giá thành công",
         status: 200,
       });
     } catch (err) {
@@ -362,21 +359,21 @@ const productController = {
 
     if (!rating || !content) {
       return res.status(400).json({
-        message: "All fields must be required",
+        message: "Mọi trường dữ liệu đều bắt buộc",
         status: 400,
       });
     }
 
     if (rating < 1 || rating > 5) {
       return res.status(400).json({
-        message: "Rating must be between 1 and 5",
+        message: "Đánh giá sản phẩm phải nằm trong khoảng 1 đến 5 sao",
         status: 400,
       });
     }
 
     if (content.length < 8) {
       return res.status(400).json({
-        message: "Content must be at least 8 characters",
+        message: "Nhận xét phải có ít nhất 8 chữ",
         status: 400,
       });
     }
@@ -385,7 +382,7 @@ const productController = {
       const product = await Product.findById(productId);
       if (!product) {
         return res.status(404).json({
-          message: "Not found product",
+          message: "Không tìm thấy sản phẩm",
           status: 400,
         });
       }
@@ -393,14 +390,14 @@ const productController = {
       const comment = product.comments.id(commentId);
       if (!comment) {
         return res.status(404).json({
-          message: "Not found comment",
+          message: "Không tìm thấy bình luận",
           status: 400,
         });
       }
 
       if (comment.author.toString() !== req.user.id.toString()) {
         return res.status(403).json({
-          message: "You don't have permission to edit comment",
+          message: "Bạn không có quyền chỉnh sửa đánh giá này",
           status: 403,
         });
       }
@@ -410,7 +407,7 @@ const productController = {
 
       await product.save();
       return res.status(200).json({
-        message: "Edit comment successful",
+        message: "Cập nhật đánh giá thành công",
         status: 200,
       });
     } catch (err) {

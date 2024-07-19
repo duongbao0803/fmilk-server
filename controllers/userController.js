@@ -42,7 +42,7 @@ const userController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Not found user",
+          message: "Không tìm thấy người dùng",
           status: 404,
         });
       }
@@ -64,7 +64,7 @@ const userController = {
       if (!role) {
         return res
           .status(400)
-          .json({ message: "Role is required", status: 400 });
+          .json({ message: "Vai trò là trường bắt buộc", status: 400 });
       }
 
       const users = await User.find({ role });
@@ -78,7 +78,7 @@ const userController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid user ID",
+          message: "ID của người dùng không hợp lệ",
           status: 400,
         });
       }
@@ -87,7 +87,7 @@ const userController = {
       );
       if (!userInfo) {
         return res.status(404).json({
-          message: "Not found user",
+          message: "Không tìm thấy người dùng",
           status: 404,
         });
       }
@@ -102,7 +102,7 @@ const userController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid user ID",
+          message: "ID của người dùng không hợp lệ",
           status: 400,
         });
       }
@@ -110,7 +110,7 @@ const userController = {
       const loggedInUserId = req.user.id;
       if (req.params.id === loggedInUserId.toString()) {
         return res.status(403).json({
-          message: "You cannot delete yourself",
+          message: "Bạn không thể xóa bản thân bạn",
           status: 403,
         });
       }
@@ -118,7 +118,7 @@ const userController = {
       const user = await User.findById(req.params.id);
       if (!user) {
         return res.status(404).json({
-          message: "Not found user",
+          message: "Không tìm thấy người dùng",
           status: 404,
         });
       }
@@ -126,12 +126,12 @@ const userController = {
       if (user.status === false) {
         await User.findByIdAndDelete(req.params.id);
         return res.status(200).json({
-          message: "Delete Successful",
+          message: "Xóa thành công",
           status: 200,
         });
       } else {
         return res.status(400).json({
-          message: "Cannot delete user before inactive",
+          message: "Không thể xóa người dùng trước khi người dùng INACTIVE",
           status: 400,
         });
       }
@@ -150,35 +150,35 @@ const userController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid user ID",
+          message: "ID của người dùng không hợp lệ",
           status: 400,
         });
       }
 
       if (!name || !phone || !address) {
         return res.status(400).json({
-          message: "Name, phone and address must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
 
       if (name.length < 8) {
         return res.status(400).json({
-          message: "Name must be at least 8 characters",
+          message: "Tên người dùng có ít nhất 8 ký tự",
           status: 400,
         });
       }
 
       if (existingPhoneUser && existingPhoneUser.id !== id) {
         return res.status(400).json({
-          message: "Phone number is existed",
+          message: "Số điện thoại đã tồn tại",
           status: 400,
         });
       }
 
       if (phone.length !== 10) {
         return res.status(400).json({
-          message: "Phone number must be 10 digits",
+          message: "Số điện thoại phải có 10 số",
           status: 400,
         });
       }
@@ -188,7 +188,7 @@ const userController = {
         (myRole === "STAFF" && targetUser.role !== "STAFF")
       ) {
         return res.status(403).json({
-          message: "You don't have permission",
+          message: "Bạn không có quyền",
           status: 403,
         });
       }
@@ -205,12 +205,12 @@ const userController = {
       );
       if (user) {
         return res.status(200).json({
-          message: "Update Successful",
+          message: "Cập nhật thành công",
           status: 200,
         });
       } else {
         return res.status(400).json({
-          message: "Update failed",
+          message: "Cập nhật thất bại",
           status: 400,
         });
       }
@@ -225,7 +225,7 @@ const userController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid user ID",
+          message: "ID của người dùng không hợp lệ",
           status: 400,
         });
       }
@@ -233,7 +233,7 @@ const userController = {
       const loggedInUserId = req.user.id;
       if (req.params.id === loggedInUserId.toString()) {
         return res.status(403).json({
-          message: "You cannot disable yourself",
+          message: "Bạn không thể vô hiệu hóa chính bản thân bạn",
           status: 403,
         });
       }
@@ -246,13 +246,13 @@ const userController = {
 
       if (!userStatus) {
         return res.status(404).json({
-          message: "Not found user",
+          message: "Không tìm thấy người dùng",
           status: 404,
         });
       }
 
       return res.status(200).json({
-        message: "Update Status Successful",
+        message: "Cập nhật trạng thái thành công",
         status: 200,
       });
     } catch (err) {
@@ -268,35 +268,35 @@ const userController = {
     try {
       if (!ObjectId.isValid(userId)) {
         return res.status(400).json({
-          message: "Invalid user ID",
+          message: "ID của người dùng không hợp lệ",
           status: 400,
         });
       }
 
       if (!name || !phone || !address || !dob) {
         return res.status(400).json({
-          message: "Name, phone, dob and address must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
 
       if (name.length < 8) {
         return res.status(400).json({
-          message: "Name must be at least 8 characters",
+          message: "Tên người dùng có ít nhất 8 ký tự",
           status: 400,
         });
       }
 
       if (existingPhoneUser && existingPhoneUser.id !== userId) {
         return res.status(400).json({
-          message: "Phone number is existed",
+          message: "Số điện thoại đã tồn tại",
           status: 400,
         });
       }
 
       if (phone.length !== 10) {
         return res.status(400).json({
-          message: "Phone number must be 10 digits",
+          message: "Số điện thoại phải có 10 số",
           status: 400,
         });
       }
@@ -313,7 +313,7 @@ const userController = {
       );
       if (user) {
         return res.status(200).json({
-          message: "Update Successful",
+          message: "Cập nhật thành công",
           status: 200,
           user,
         });
@@ -325,16 +325,21 @@ const userController = {
 
   changePassword: async (req, res) => {
     const userId = req.user.id;
-    console.log("check userid", userId);
     const { oldPassword, newPassword } = req.body;
 
     try {
       const user = await User.findById(userId);
-      console.log("check user", user);
       if (!user) {
         return res.status(404).json({
-          message: "Not found user",
+          message: "Không tìm thấy người dùng",
           status: 404,
+        });
+      }
+
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({
+          message: "Mọi trường dữ liệu đều bắt buộc",
+          status: 400,
         });
       }
 
@@ -342,14 +347,14 @@ const userController = {
 
       if (!comparePassword) {
         return res.status(404).json({
-          message: "Old password is invalid",
+          message: "Mật khẩu cũ không hợp lệ",
           status: 404,
         });
       }
 
       if (newPassword.length < 8) {
         return res.status(400).json({
-          message: "Password must be at least 8 characters",
+          message: "Mật khẩu phải có ít nhất 8 ký tự",
           status: 400,
         });
       }
@@ -360,7 +365,7 @@ const userController = {
       const updateUser = await user.save();
       if (updateUser) {
         return res.status(200).json({
-          message: "Change password successful",
+          message: "Thay đổi mật khẩu thành công",
           status: 200,
         });
       }

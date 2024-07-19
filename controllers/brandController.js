@@ -38,7 +38,7 @@ const brandController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Not found brand",
+          message: "Không tìm thấy thương hiệu",
           status: 404,
         });
       }
@@ -58,7 +58,7 @@ const brandController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid brand ID",
+          message: "ID của thương hiệu không hợp lệ",
           status: 400,
         });
       }
@@ -66,7 +66,7 @@ const brandController = {
       const brandInfo = await Brand.findById(req.params.id);
       if (!brandInfo) {
         return res.status(404).json({
-          message: "Not found brand",
+          message: "Không tìm thấy thương hiệu",
           status: 404,
         });
       }
@@ -82,14 +82,14 @@ const brandController = {
     try {
       if (!brandName || !origin) {
         return res.status(400).json({
-          message: "Input must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
 
       const newBrand = await Brand.create(req.body);
       return res.status(200).json({
-        message: "Add new brand successful",
+        message: "Thêm thương hiệu mới thành công",
         status: 200,
         newBrand,
       });
@@ -102,7 +102,7 @@ const brandController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid brand ID",
+          message: "ID của thương hiệu không hợp lệ",
           status: 400,
         });
       }
@@ -113,7 +113,8 @@ const brandController = {
 
       if (brandInProduct) {
         return res.status(400).json({
-          message: "Cannot delete brand. It still exist in product",
+          message:
+            "Không thể xóa thương hiệu. Thương hiệu vẫn còn tồn tại trong sản phẩm",
           status: 400,
         });
       }
@@ -121,13 +122,13 @@ const brandController = {
       const brand = await Brand.findByIdAndDelete(req.params.id);
       if (!brand) {
         return res.status(404).json({
-          message: "Not found brand",
+          message: "Không tìm thấy thương hiệu",
           status: 404,
         });
       }
 
       return res.status(200).json({
-        message: "Delete Successful",
+        message: "Xóa thành công",
         status: 200,
       });
     } catch (err) {
@@ -141,14 +142,14 @@ const brandController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid brand ID",
+          message: "ID của thương hiệu không hợp lệ",
           status: 400,
         });
       }
 
       if (!brandName || !origin) {
         return res.status(400).json({
-          message: "Input must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
@@ -163,7 +164,7 @@ const brandController = {
       );
       if (brand) {
         return res.status(200).json({
-          message: "Update Successful",
+          message: "Cập nhật thành công",
           status: 200,
         });
       }
