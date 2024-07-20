@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
 
+const transactionSchema = new mongoose.Schema(
+  {
+    transactionId: String,
+    amount: Number,
+    status: String,
+  },
+  { timestamps: true }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     orderProducts: [
@@ -59,7 +68,6 @@ const orderSchema = new mongoose.Schema(
     transferPrice: {
       type: Number,
       required: true,
-      min: 1,
     },
     totalPrice: {
       type: Number,
@@ -81,6 +89,7 @@ const orderSchema = new mongoose.Schema(
     deliveredAt: {
       type: Date,
     },
+    transactions: [transactionSchema],
   },
   { timestamps: true }
 );

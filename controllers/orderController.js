@@ -340,12 +340,20 @@ const orderController = {
       const orderId = vnp_Params["vnp_TxnRef"];
 
       if (secureHash === signed) {
+        const transaction = {
+          transactionId: vnp_Params["vnp_TransactionNo"],
+          amount: vnpay_Params_update.vnp_Amount,
+          status:
+            vnp_Params["vnp_ResponseCode"] === "00" ? "SUCCESS" : "FAILED",
+        };
+
         if (vnp_Params["vnp_ResponseCode"] === "00") {
           await Order.findOneAndUpdate(
             { _id: orderId },
             {
               isPaid: true,
               paidAt: new Date(),
+              $push: { transactions: transaction },
             },
             { new: true }
           );
@@ -361,7 +369,22 @@ const orderController = {
                 }
               })
             );
+            await Order.findOneAndUpdate(
+              { _id: orderId },
+              {
+                $push: { transactions: transaction },
+              },
+              { new: true }
+            );
           }
+        } else {
+          await Order.findOneAndUpdate(
+            { _id: orderId },
+            {
+              $push: { transactions: transaction },
+            },
+            { new: true }
+          );
         }
 
         return res.redirect(redirectUrl);
