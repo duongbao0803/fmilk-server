@@ -34,7 +34,7 @@ const orderSchema = new mongoose.Schema(
       ref: "user",
     },
     transferAddress: {
-      fullName: {
+      name: {
         type: String,
         required: true,
       },

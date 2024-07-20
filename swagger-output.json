@@ -7,7 +7,9 @@
   },
   "host": "localhost:8000",
   "basePath": "/api/v1",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
@@ -1225,7 +1227,14 @@
   "definitions": {
     "User": {
       "title": "user",
-      "required": ["username", "name", "phone", "email", "address", "password"],
+      "required": [
+        "username",
+        "name",
+        "phone",
+        "email",
+        "address",
+        "password"
+      ],
       "properties": {
         "username": {
           "type": "string"
@@ -1329,7 +1338,10 @@
         },
         "status": {
           "type": "string",
-          "enum": ["AVAILABLE", "EXPIRE"]
+          "enum": [
+            "AVAILABLE",
+            "EXPIRE"
+          ]
         },
         "brand": {
           "type": "schemaobjectid"
@@ -1349,7 +1361,11 @@
     },
     "Post": {
       "title": "post",
-      "required": ["title", "product", "image"],
+      "required": [
+        "title",
+        "product",
+        "image"
+      ],
       "properties": {
         "title": {
           "type": "string"
@@ -1379,7 +1395,10 @@
     },
     "Brand": {
       "title": "brand",
-      "required": ["brandName", "origin"],
+      "required": [
+        "brandName",
+        "origin"
+      ],
       "properties": {
         "brandName": {
           "type": "string"
@@ -1430,7 +1449,13 @@
                 "type": "schemaobjectid"
               }
             },
-            "required": ["name", "image", "amount", "price", "productId"]
+            "required": [
+              "name",
+              "image",
+              "amount",
+              "price",
+              "productId"
+            ]
           }
         },
         "userId": {
@@ -1439,7 +1464,7 @@
         "transferAddress": {
           "type": "object",
           "properties": {
-            "fullName": {
+            "name": {
               "type": "string"
             },
             "address": {
@@ -1464,7 +1489,11 @@
         },
         "status": {
           "type": "string",
-          "enum": ["PENDING", "DELIVERING", "DELIVERED"]
+          "enum": [
+            "PENDING",
+            "DELIVERING",
+            "DELIVERED"
+          ]
         },
         "isPaid": {
           "type": "boolean"

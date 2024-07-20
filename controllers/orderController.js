@@ -141,9 +141,9 @@ const orderController = {
       } = req.body;
 
       const errors = [];
-      const { fullName, address, phone } = transferAddress;
+      const { name, address, phone } = transferAddress;
 
-      if (!fullName || !address || !phone) {
+      if (!name || !address || !phone) {
         errors.push("Mọi trường dữ liệu đều bắt buộc");
       }
 
@@ -151,7 +151,7 @@ const orderController = {
         errors.push("Không có sản phẩm nào được đặt hàng");
       }
 
-      if (!paymentMethod || !itemsPrice || !transferPrice || !totalPrice) {
+      if (!paymentMethod || !itemsPrice || !totalPrice) {
         errors.push("Mọi trường dữ liệu khi thanh toán đều bắt buộc");
       }
 
@@ -218,9 +218,9 @@ const orderController = {
       for (const product of detailOrderProducts) {
         const foundProduct = await Product.findById(product.productId);
         if (foundProduct.status.includes("AVAILABLE")) {
-          if (foundProduct.quantity < product.amount) {
+          if (foundProduct.quantity <= product.amount) {
             return res.status(404).json({
-              message: `Sản phẩm chỉ còn ${foundProduct.quantity} trong kho`,
+              message: `Sản phẩm chỉ còn ${foundProduct.quantity} hộp trong kho`,
               status: 404,
             });
           }
@@ -239,7 +239,7 @@ const orderController = {
       const order = await Order.create({
         orderProducts: detailOrderProducts,
         transferAddress: {
-          fullName,
+          name,
           address,
           phone,
         },
@@ -250,11 +250,7 @@ const orderController = {
         userId,
       });
 
-      if (
-        user &&
-        user.role.includes("MEMBER") &&
-        order.paymentMethod.includes("VNPAY")
-      ) {
+      if (user?.role === "MEMBER" && order.paymentMethod === "VNPAY") {
         const amount = order.totalPrice;
 
         process.env.TZ = "Asia/Ho_Chi_Minh";
@@ -271,7 +267,7 @@ const orderController = {
         let secretKey = config.get("vnp_HashSecret");
         let vnpUrl = config.get("vnp_Url");
         let returnUrl = config.get("vnp_ReturnUrl");
-        let orderId = order._id;
+        let orderId = order?._id.toString();
 
         let locale = "vn";
         let currCode = "VND";
@@ -282,20 +278,18 @@ const orderController = {
         vnp_Params["vnp_Locale"] = locale;
         vnp_Params["vnp_CurrCode"] = currCode;
         vnp_Params["vnp_TxnRef"] = orderId;
-        vnp_Params["vnp_OrderInfo"] = "Thanh toan cho ma GD:" + orderId;
+        vnp_Params["vnp_OrderInfo"] = "Thanh toan ma GD:" + orderId;
         vnp_Params["vnp_OrderType"] = "other";
         vnp_Params["vnp_Amount"] = amount * 100;
         vnp_Params["vnp_ReturnUrl"] = returnUrl;
         vnp_Params["vnp_IpAddr"] = ipAddr;
         vnp_Params["vnp_CreateDate"] = createDate;
 
-        console.log("VNPay Params:", vnp_Params);
-
         vnp_Params = sortObject(vnp_Params);
 
         let signData = querystring.stringify(vnp_Params, { encode: false });
         let hmac = crypto.createHmac("sha512", secretKey);
-        let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+        let signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
         vnp_Params["vnp_SecureHash"] = signed;
         vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
 
@@ -307,7 +301,7 @@ const orderController = {
         });
       } else {
         return res.status(200).json({
-          message: "Tạo đơn hàng thành công",
+          message: "Tạo đơn hàng thành công. Chúng tôi sẽ liên lạc với bạn sớm",
           status: 200,
         });
       }
@@ -318,24 +312,22 @@ const orderController = {
   },
 
   returnVnpay: async (req, res) => {
-    let vnp_Params = req.query;
+    try {
+      let vnp_Params = req.query;
 
-    let secureHash = vnp_Params["vnp_SecureHash"];
+      let secureHash = vnp_Params["vnp_SecureHash"];
 
-    delete vnp_Params["vnp_SecureHash"];
-    delete vnp_Params["vnp_SecureHashType"];
+      delete vnp_Params["vnp_SecureHash"];
+      delete vnp_Params["vnp_SecureHashType"];
 
-    vnp_Params = sortObject(vnp_Params);
+      vnp_Params = sortObject(vnp_Params);
 
-    let tmnCode = config.get("vnp_TmnCode");
-    let secretKey = config.get("vnp_HashSecret");
+      let secretKey = config.get("vnp_HashSecret");
 
-    let signData = querystring.stringify(vnp_Params, { encode: false });
-    let hmac = crypto.createHmac("sha512", secretKey);
-    let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+      let signData = querystring.stringify(vnp_Params, { encode: false });
+      let hmac = crypto.createHmac("sha512", secretKey);
+      let signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
 
-    if (secureHash === signed) {
-      const orderId = vnp_Params["vnp_TxnRef"];
       const vnp_Amount = parseFloat(vnp_Params["vnp_Amount"]);
       const vnpay_Params_update = {
         ...vnp_Params,
@@ -345,18 +337,36 @@ const orderController = {
         vnpay_Params_update
       )}`;
 
-      await Order.findOneAndUpdate(
-        { _id: orderId },
-        { isPaid: true },
-        { new: true }
-      );
+      const orderId = vnp_Params["vnp_TxnRef"];
 
-      return res.redirect(redirectUrl);
-    } else {
-      const redirectUrl = `http://localhost:3000/payment?${querystring.stringify(
-        vnpay_Params_update
-      )}`;
-      return res.redirect(redirectUrl);
+      if (secureHash === signed) {
+        if (vnp_Params["vnp_ResponseCode"] === "00") {
+          await Order.findOneAndUpdate(
+            { _id: orderId },
+            { isPaid: true },
+            { new: true }
+          );
+        } else if (vnp_Params["vnp_ResponseCode"] === "24") {
+          const order = await Order.findById(orderId);
+          if (order) {
+            await Promise.all(
+              order.orderProducts.map(async (product) => {
+                const foundProduct = await Product.findById(product.productId);
+                if (foundProduct) {
+                  foundProduct.quantity += product.amount;
+                  await foundProduct.save({ validateModifiedOnly: true });
+                }
+              })
+            );
+          }
+        }
+
+        return res.redirect(redirectUrl);
+      } else {
+        return res.redirect(redirectUrl);
+      }
+    } catch (err) {
+      return res.status(400).json(err);
     }
   },
 };

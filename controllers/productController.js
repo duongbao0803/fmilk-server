@@ -73,9 +73,12 @@ const productController = {
           status: 400,
         });
       }
-      const productInfo = await Product.findById(req.params.id).populate(
-        "brand"
-      );
+      const productInfo = await Product.findById(req.params.id)
+        .populate("brand")
+        .populate({
+          path: "comments.author",
+          select: "name",
+        });
       if (!productInfo) {
         return res.status(404).json({
           message: "Không tìm thấy sản phẩm",
