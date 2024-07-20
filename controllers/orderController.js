@@ -343,7 +343,10 @@ const orderController = {
         if (vnp_Params["vnp_ResponseCode"] === "00") {
           await Order.findOneAndUpdate(
             { _id: orderId },
-            { isPaid: true },
+            {
+              isPaid: true,
+              paidAt: new Date(),
+            },
             { new: true }
           );
         } else if (vnp_Params["vnp_ResponseCode"] === "24") {
