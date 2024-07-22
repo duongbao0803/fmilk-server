@@ -266,7 +266,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "YYYY/MM/DD"
+                  "example": "2024-07-07"
                 }
               }
             }
@@ -309,7 +309,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "YYYY/MM/DD"
+                  "example": "2024-07-07"
                 }
               }
             }
@@ -350,9 +350,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "400": {
             "description": "Bad Request"
           },
@@ -421,22 +418,12 @@
             "type": "number"
           },
           {
-            "name": "name",
+            "name": "productName",
             "in": "query",
             "type": "string"
           },
           {
             "name": "origin",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "minPrice",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "maxPrice",
             "in": "query",
             "type": "string"
           }
@@ -530,9 +517,12 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
+                  "example": 10
+                },
+                "origin": {
                   "example": "any"
                 },
                 "brand": {
@@ -570,18 +560,21 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "YYYY/MM/DD"
+                  "example": "2024-07-07"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10
                 },
                 "image": {
                   "example": "any"
                 },
                 "description": {
+                  "example": "any"
+                },
+                "origin": {
                   "example": "any"
                 },
                 "brand": {
@@ -684,7 +677,7 @@
         }
       },
       "put": {
-        "tags": ["Product"],
+        "tags": ["Comment"],
         "description": "",
         "parameters": [
           {
@@ -753,11 +746,6 @@
             "name": "brandName",
             "in": "query",
             "type": "string"
-          },
-          {
-            "name": "origin",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -791,9 +779,6 @@
           },
           "400": {
             "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -844,9 +829,6 @@
               "properties": {
                 "brandName": {
                   "example": "any"
-                },
-                "origin": {
-                  "example": "any"
                 }
               }
             }
@@ -877,9 +859,6 @@
               "type": "object",
               "properties": {
                 "brandName": {
-                  "example": "any"
-                },
-                "origin": {
                   "example": "any"
                 }
               }
@@ -1039,7 +1018,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "product": {
+                "productId": {
                   "example": "any"
                 },
                 "title": {
@@ -1068,49 +1047,6 @@
         }
       }
     },
-    "/order/vnpay_return": {
-      "get": {
-        "tags": ["Order"],
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/order/getByUser": {
-      "get": {
-        "tags": ["Order"],
-        "description": "",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
     "/order/": {
       "get": {
         "tags": ["Order"],
@@ -1125,26 +1061,6 @@
             "name": "pageSize",
             "in": "query",
             "type": "number"
-          },
-          {
-            "name": "minPrice",
-            "in": "query",
-            "type": "number"
-          },
-          {
-            "name": "maxPrice",
-            "in": "query",
-            "type": "number"
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "paymentMethod",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -1205,7 +1121,7 @@
                 "transferAddress": {
                   "type": "object",
                   "properties": {
-                    "name": {
+                    "fullName": {
                       "type": "string",
                       "example": "any"
                     },
@@ -1249,45 +1165,6 @@
                 },
                 "totalPrice": {
                   "example": 10
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/order/{orderId}/status": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "example": "any"
                 }
               }
             }
@@ -1364,6 +1241,7 @@
         "description",
         "quantity",
         "price",
+        "origin",
         "expireDate"
       ],
       "properties": {
@@ -1411,6 +1289,9 @@
         "price": {
           "type": "number"
         },
+        "origin": {
+          "type": "string"
+        },
         "expireDate": {
           "type": "string",
           "format": "date-time"
@@ -1437,7 +1318,7 @@
     },
     "Post": {
       "title": "post",
-      "required": ["title", "product", "image"],
+      "required": ["title", "productId", "image"],
       "properties": {
         "title": {
           "type": "string"
@@ -1446,7 +1327,7 @@
           "type": "string",
           "required": false
         },
-        "product": {
+        "productId": {
           "type": "schemaobjectid"
         },
         "image": {
@@ -1467,12 +1348,8 @@
     },
     "Brand": {
       "title": "brand",
-      "required": ["brandName", "origin"],
       "properties": {
         "brandName": {
-          "type": "string"
-        },
-        "origin": {
           "type": "string"
         },
         "_id": {
@@ -1527,7 +1404,7 @@
         "transferAddress": {
           "type": "object",
           "properties": {
-            "name": {
+            "fullName": {
               "type": "string"
             },
             "address": {
@@ -1550,10 +1427,6 @@
         "totalPrice": {
           "type": "number"
         },
-        "status": {
-          "type": "string",
-          "enum": ["PENDING", "DELIVERING", "DELIVERED"]
-        },
         "isPaid": {
           "type": "boolean"
         },
@@ -1561,38 +1434,12 @@
           "type": "string",
           "format": "date-time"
         },
+        "isDelivered": {
+          "type": "boolean"
+        },
         "deliveredAt": {
           "type": "string",
           "format": "date-time"
-        },
-        "transactions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "transactionId": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              },
-              "status": {
-                "type": "string"
-              },
-              "_id": {
-                "type": "string"
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "updatedAt": {
-                "type": "string",
-                "format": "date-time"
-              }
-            },
-            "required": []
-          }
         },
         "_id": {
           "type": "string"
