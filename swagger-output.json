@@ -1251,6 +1251,7 @@
     },
     "/order/{orderId}/status": {
       "put": {
+        "tags": ["Order"],
         "description": "",
         "parameters": [
           {
