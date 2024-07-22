@@ -20,6 +20,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
+const client = redis.createClient();
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -32,9 +33,7 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
-// Create a Redis client
-const client = redis.createClient();
-
+// redis
 client.on("connect", () => {
   console.log("Connected to Redis");
 });

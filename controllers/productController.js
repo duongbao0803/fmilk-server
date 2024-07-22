@@ -293,7 +293,6 @@ const productController = {
   //Comments
   addNewComment: async (req, res) => {
     const { rating, content } = req.body;
-    console.log("check body", req.body);
 
     try {
       if (!ObjectId.isValid(req.params.productId)) {
@@ -304,7 +303,6 @@ const productController = {
       }
 
       const product = await Product.findById(req.params.productId);
-      console.log("checkl product", product);
       if (!product) {
         return res.status(404).json({
           message: "Không tìm thấy sản phẩm",

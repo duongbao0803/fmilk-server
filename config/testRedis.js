@@ -26,7 +26,6 @@ async function testRedis() {
     await client.set("testKey", "Hello, Redis Cloud!");
 
     const value = await client.get("testKey");
-    console.log("Value:", value);
 
     await client.quit();
   } catch (error) {

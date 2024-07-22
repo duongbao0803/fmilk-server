@@ -148,8 +148,6 @@ const userController = {
     const targetUser = await User.findById(id);
     const existingPhoneUser = await User.findOne({ phone });
 
-    console.log("check date", date);
-
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
