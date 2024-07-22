@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    productId: {
+    product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "product",
       required: true,

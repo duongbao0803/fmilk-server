@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -10,7 +9,9 @@ const cron = require("node-cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
 const Product = require("./models/product");
+const connectDB = require("./config/database");
 
+connectDB();
 dotenv.config();
 const app = express();
 app.use(bodyParser.json());
@@ -22,14 +23,18 @@ app.use(morgan("dev"));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-mongoose
-  .connect(process.env.MONGODB_URL)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
+const redis = require("redis");
+
+// Create a Redis client
+const client = redis.createClient();
+
+client.on("connect", () => {
+  console.log("Connected to Redis");
+});
+
+client.on("error", (err) => {
+  console.log("Redis Client Error", err);
+});
 
 //Node-cron
 cron.schedule("0 0 * * *", async () => {
@@ -60,6 +65,6 @@ cron.schedule("0 0 * * *", async () => {
 // ROUTES
 app.use("/api/v1", routes);
 
-app.listen(8000, () => {
+app.listen(6379, () => {
   console.log("Server is running");
 });
