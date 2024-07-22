@@ -29,7 +29,7 @@ const postController = {
       let query = {};
 
       if (title) {
-        query.title = { $regex: title, $options: "i" };
+        query.title = { $regex: new RegExp(title, "i") };
       }
 
       const posts = await Post.find(query).skip(skip).limit(pageSize);

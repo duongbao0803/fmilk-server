@@ -433,7 +433,7 @@
             "type": "string"
           },
           {
-            "name": "productName",
+            "name": "name",
             "in": "query",
             "type": "string"
           },
@@ -1127,6 +1127,26 @@
             "name": "pageSize",
             "in": "query",
             "type": "string"
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "paymentMethod",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1174,44 +1194,64 @@
     },
     "/order/create": {
       "post": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "x-forwarded-for",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
+                "transferAddress": {
+                  "type": "object",
+                  "properties": {
+                    "fullName": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "any"
+                    }
+                  }
+                },
                 "orderProducts": {
-                  "example": "any"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "example": 10
+                      },
+                      "productId": {
+                        "type": "string",
+                        "example": "any"
+                      }
+                    }
+                  }
                 },
                 "userId": {
-                  "example": "any"
+                  "example": null
                 },
                 "paymentMethod": {
                   "example": "any"
                 },
                 "itemsPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "transferPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "totalPrice": {
-                  "example": "any"
-                },
-                "transferAddress": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }

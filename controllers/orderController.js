@@ -12,7 +12,9 @@ const sortObject = require("../utils/format");
 const orderController = {
   getAllOrder: async (req, res) => {
     try {
-      let { page, pageSize } = req.query;
+      let { page, pageSize, minPrice, maxPrice, status, paymentMethod } =
+        req.query;
+
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -32,8 +34,27 @@ const orderController = {
 
       const skip = (page - 1) * pageSize;
 
-      const orders = await Order.find().skip(skip).limit(pageSize);
-      const totalCount = await Order.countDocuments();
+      const filter = {};
+
+      if (minPrice) {
+        filter.totalPrice = { $gte: Number(minPrice) };
+      }
+
+      if (maxPrice) {
+        filter.totalPrice = filter.totalPrice || {};
+        filter.totalPrice.$lte = Number(maxPrice);
+      }
+
+      if (status) {
+        filter.status = { $regex: new RegExp(status, "i") };
+      }
+
+      if (paymentMethod) {
+        filter.paymentMethod = { $regex: new RegExp(paymentMethod, "i") };
+      }
+
+      const orders = await Order.find(filter).skip(skip).limit(pageSize);
+      const totalCount = await Order.countDocuments(filter);
 
       if (skip >= totalCount) {
         return res.status(404).json({

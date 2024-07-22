@@ -1,6 +1,5 @@
 const redis = require("redis");
 
-// Replace with your Redis Cloud instance details
 const REDIS_HOST = "your-redis-cloud-host";
 const REDIS_PORT = "your-redis-cloud-port";
 const REDIS_PASSWORD = "your-redis-cloud-password";
@@ -24,19 +23,15 @@ client.on("error", (err) => {
 
 async function testRedis() {
   try {
-    // Set a value in Redis
     await client.set("testKey", "Hello, Redis Cloud!");
 
-    // Get the value from Redis
     const value = await client.get("testKey");
     console.log("Value:", value);
 
-    // Disconnect from Redis
     await client.quit();
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
-// Run the test function
 testRedis();
