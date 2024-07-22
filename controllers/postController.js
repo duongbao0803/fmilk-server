@@ -12,14 +12,14 @@ const postController = {
 
       if (page <= 0) {
         return res.status(400).json({
-          message: "Page number must be a positive integer",
+          message: "Số lượng trang phải là số dương",
           status: 400,
         });
       }
 
       if (pageSize <= 0) {
         return res.status(400).json({
-          message: "Page size must be a positive integer",
+          message: "Số lượng phần tử trong trang phải là số dương",
           status: 400,
         });
       }
@@ -29,7 +29,7 @@ const postController = {
       let query = {};
 
       if (title) {
-        query.title = { $regex: title, $options: "i" };
+        query.title = { $regex: new RegExp(title, "i") };
       }
 
       const posts = await Post.find(query).skip(skip).limit(pageSize);
@@ -37,7 +37,7 @@ const postController = {
 
       if (skip >= totalCount) {
         return res.status(404).json({
-          message: "Not found post",
+          message: "Không tìm thấy bài viết",
           status: 404,
         });
       }
@@ -57,15 +57,15 @@ const postController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "ID của sản phẩm không hợp lệ",
           status: 400,
         });
       }
 
-      const postInfo = await Post.findById(req.params.id);
+      const postInfo = await Post.findById(req.params.id).populate("product");
       if (!postInfo) {
         return res.status(404).json({
-          message: "Not found post",
+          message: "Không tìm thấy bài viết",
           status: 404,
         });
       }
@@ -78,18 +78,18 @@ const postController = {
 
   addPost: async (req, res) => {
     try {
-      const { title, description, image, productId } = req.body;
+      const { title, description, image, product } = req.body;
 
-      if (!title || !description || !image || !productId) {
+      if (!title || !description || !image || !product) {
         return res.status(400).json({
-          message: "All fields must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
 
-      if (!ObjectId.isValid(req.body.productId)) {
+      if (!ObjectId.isValid(req.body.product)) {
         return res.status(400).json({
-          message: "Invalid product ID",
+          message: "ID của sản phẩm không hợp lệ",
           status: 400,
         });
       }
@@ -98,11 +98,11 @@ const postController = {
         title,
         description,
         image,
-        productId,
+        product,
       });
 
       return res.status(200).json({
-        message: "Add Successful",
+        message: "Thêm bài viết thành công",
         status: 200,
         post,
       });
@@ -115,7 +115,7 @@ const postController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid post ID",
+          message: "ID của bài viết không hợp lệ",
           status: 400,
         });
       }
@@ -123,13 +123,13 @@ const postController = {
       const post = await Post.findByIdAndDelete(req.params.id);
       if (!post) {
         return res.status(404).json({
-          message: "Not found post",
+          message: "Không tìm thấy bài viết",
           status: 404,
         });
       }
 
       return res.status(200).json({
-        message: "Delete Successful",
+        message: "Xóa bài viết thành công",
         status: 200,
       });
     } catch (err) {
@@ -143,14 +143,14 @@ const postController = {
     try {
       if (!ObjectId.isValid(req.params.id)) {
         return res.status(400).json({
-          message: "Invalid post ID",
+          message: "ID của bài viết không hợp lệ",
           status: 400,
         });
       }
 
       if (!title || !description || !image) {
         return res.status(400).json({
-          message: "All fields must be required",
+          message: "Mọi trường dữ liệu đều bắt buộc",
           status: 400,
         });
       }
@@ -167,12 +167,12 @@ const postController = {
       );
       if (post) {
         return res.status(200).json({
-          message: "Update Successful",
+          message: "Cập nhật thành công",
           status: 200,
         });
       } else {
         return res.status(400).json({
-          message: "Update failed",
+          message: "Cập nhật thất bại",
           status: 400,
         });
       }

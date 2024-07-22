@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const middlewareController = {
   verifyBearer: (req, res, next) => {
     const token = req.header("Authorization");
-    console.log("check beaerer", token);
     if (token && !token.startsWith("Bearer ")) {
       req.headers.authorization = `Bearer ${token}`;
     }
@@ -21,7 +20,7 @@ const middlewareController = {
         jwt.verify(accessToken, process.env.ACCESS_TOKEN, (err, user) => {
           if (err) {
             return res.status(401).json({
-              message: "Token is not valid",
+              message: "Token không hợp lệ",
               status: 401,
             });
           }
@@ -30,7 +29,7 @@ const middlewareController = {
         });
       } else {
         return res.status(401).json({
-          message: "You are unauthorized",
+          message: "Bạn chưa đăng nhập",
           status: 401,
         });
       }
@@ -43,7 +42,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You don't have permission",
+          message: "Bạn không có quyền",
           status: 403,
         });
       }
@@ -56,7 +55,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You don't have permission",
+          message: "Bạn không có quyền",
           status: 403,
         });
       }
@@ -72,7 +71,7 @@ const middlewareController = {
         next();
       } else {
         res.status(403).json({
-          message: "You don't have permission",
+          message: "Bạn không có quyền",
           status: 403,
         });
       }
@@ -85,7 +84,7 @@ const middlewareController = {
         next();
       } else {
         return res.status(403).json({
-          message: "You don't have permission",
+          message: "Bạn không có quyền",
           status: 403,
         });
       }

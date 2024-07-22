@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
 
+const transactionSchema = new mongoose.Schema(
+  {
+    transactionId: String,
+    amount: Number,
+    status: String,
+  },
+  { timestamps: true }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     orderProducts: [
@@ -34,7 +43,7 @@ const orderSchema = new mongoose.Schema(
       ref: "user",
     },
     transferAddress: {
-      fullName: {
+      name: {
         type: String,
         required: true,
       },
@@ -59,12 +68,16 @@ const orderSchema = new mongoose.Schema(
     transferPrice: {
       type: Number,
       required: true,
-      min: 1,
     },
     totalPrice: {
       type: Number,
       required: true,
       min: 1,
+    },
+    status: {
+      type: String,
+      enum: ["PENDING", "DELIVERING", "DELIVERED"],
+      default: "PENDING",
     },
     isPaid: {
       type: Boolean,
@@ -73,13 +86,10 @@ const orderSchema = new mongoose.Schema(
     paidAt: {
       type: Date,
     },
-    isDelivered: {
-      type: Boolean,
-      default: false,
-    },
     deliveredAt: {
       type: Date,
     },
+    transactions: [transactionSchema],
   },
   { timestamps: true }
 );

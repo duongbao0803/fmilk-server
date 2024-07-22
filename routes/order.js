@@ -28,4 +28,10 @@ router.post(
   orderController.createOrder
 );
 
+router.put(
+  "/:orderId/status",
+  middlewareController.verifyAuthorityPermission,
+  orderController.updateStatusOrder
+);
+
 module.exports = router;
