@@ -5,7 +5,7 @@
     "description": "API Documentation for FMilk Web",
     "version": "1.0.0"
   },
-  "host": "localhost:8000",
+  "host": "localhost:6379",
   "basePath": "/api/v1",
   "schemes": [
     "http"
@@ -439,6 +439,16 @@
           },
           {
             "name": "origin",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "maxPrice",
             "in": "query",
             "type": "string"
           }
@@ -1222,6 +1232,45 @@
           }
         }
       }
+    },
+    "/order/{orderId}/status": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1505,6 +1554,35 @@
         "deliveredAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "transactionId": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "_id": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": []
+          }
         },
         "_id": {
           "type": "string"

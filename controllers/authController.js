@@ -1,8 +1,9 @@
-const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
+const User = require("../models/user");
+
 dotenv.config();
 
 let refreshTokens = [];

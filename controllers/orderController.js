@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const moment = require("moment");
+let config = require("config");
+const crypto = require("crypto");
+const querystring = require("qs");
 const Order = require("../models/order");
 const User = require("../models/user");
 const Product = require("../models/product");
-const moment = require("moment");
 const sortObject = require("../utils/format");
-let config = require("config");
-const querystring = require("qs");
-const crypto = require("crypto");
 
 const orderController = {
   getAllOrder: async (req, res) => {
@@ -18,14 +18,14 @@ const orderController = {
 
       if (page <= 0) {
         return res.status(400).json({
-          message: "Page number must be a positive integer",
+          message: "Số lượng trang phải là số dương",
           status: 400,
         });
       }
 
       if (pageSize <= 0) {
         return res.status(400).json({
-          message: "Page size must be a positive integer",
+          message: "Số lượng phần tử trong trang phải là số dương",
           status: 400,
         });
       }
@@ -93,14 +93,14 @@ const orderController = {
 
       if (page <= 0) {
         return res.status(400).json({
-          message: "Page number must be a positive integer",
+          message: "Số lượng trang phải là số dương",
           status: 400,
         });
       }
 
       if (pageSize <= 0) {
         return res.status(400).json({
-          message: "Page size must be a positive integer",
+          message: "Số lượng phần tử trong trang phải là số dương",
           status: 400,
         });
       }
@@ -392,6 +392,42 @@ const orderController = {
         return res.redirect(redirectUrl);
       }
     } catch (err) {
+      return res.status(400).json(err);
+    }
+  },
+
+  updateStatusOrder: async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const validStatus = ["PENDING", "DELIVERING", "DELIVERED"];
+    if (!validStatus.includes(status)) {
+      return res.status(400).json({
+        status: 404,
+        message: "Trạng thái đơn hàng không hợp lệ",
+      });
+    }
+
+    try {
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({
+          status: 404,
+          message: "Đơn hàng không tồn tại",
+        });
+      }
+
+      order.status = status;
+
+      if (status === "DELIVERED") {
+        order.deliveredAt = new Date();
+        order.isPaid = true;
+      }
+
+      await order.save();
+
+      return res.json(order);
+    } catch (error) {
       return res.status(400).json(err);
     }
   },

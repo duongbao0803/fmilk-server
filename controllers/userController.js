@@ -12,14 +12,14 @@ const userController = {
 
       if (page <= 0) {
         return res.status(400).json({
-          message: "Page number must be a positive integer",
+          message: "Số lượng trang phải là số dương",
           status: 400,
         });
       }
 
       if (pageSize <= 0) {
         return res.status(400).json({
-          message: "Page size must be a positive integer",
+          message: "Số lượng phần tử trong trang phải là số dương",
           status: 400,
         });
       }

@@ -21,7 +21,7 @@ const doc = {
     title: "FMilk Web API",
     description: "API Documentation for FMilk Web",
   },
-  host: "localhost:8000",
+  host: "localhost:6379",
   basePath: "/api/v1",
   securityDefinitions: {
     BearerAuth: {

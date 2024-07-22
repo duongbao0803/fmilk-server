@@ -4,24 +4,26 @@ const Product = require("../models/product");
 const Post = require("../models/post");
 const User = require("../models/user");
 const Brand = require("../models/brand");
+const Fuse = require("fuse.js");
 
 const productController = {
   getAllProduct: async (req, res) => {
     try {
-      let { page, pageSize, productName, origin } = req.query;
+      let { page, pageSize, productName, origin, minPrice, maxPrice } =
+        req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
       if (page <= 0) {
         return res.status(400).json({
-          message: "Page number must be a positive integer",
+          message: "Số lượng trang phải là số dương",
           status: 400,
         });
       }
 
       if (pageSize <= 0) {
         return res.status(400).json({
-          message: "Page size must be a positive integer",
+          message: "Số lượng phần tử trong trang phải là số dương",
           status: 400,
         });
       }
@@ -29,10 +31,6 @@ const productController = {
       const skip = (page - 1) * pageSize;
 
       let query = {};
-      if (productName) {
-        query.name = { $regex: productName, $options: "i" };
-      }
-
       if (origin) {
         const brands = await Brand.find({
           origin: { $regex: origin, $options: "i" },
@@ -41,16 +39,49 @@ const productController = {
         query.brand = { $in: brandIds };
       }
 
+      if (minPrice || maxPrice) {
+        query.price = {};
+        if (minPrice) {
+          query.price.$gte = parseFloat(minPrice);
+        }
+        if (maxPrice) {
+          query.price.$lte = parseFloat(maxPrice);
+        }
+      }
+
       const products = await Product.find(query)
         .skip(skip)
         .limit(pageSize)
         .populate("brand");
+
       const totalCount = await Product.countDocuments(query);
 
-      if (skip >= totalCount) {
+      if (totalCount === 0) {
         return res.status(404).json({
           message: "Không tìm thấy sản phẩm",
           status: 404,
+        });
+      }
+
+      if (productName) {
+        const fuse = new Fuse(products, {
+          keys: ["name"],
+          threshold: 0.3,
+        });
+        const result = fuse.search(productName).map((result) => result.item);
+
+        if (result.length === 0) {
+          return res.status(404).json({
+            message: "Không tìm thấy sản phẩm",
+            status: 404,
+          });
+        }
+
+        return res.status(200).json({
+          products: result,
+          currentPage: page,
+          totalPages: Math.ceil(result.length / pageSize),
+          totalProducts: result.length,
         });
       }
 
@@ -61,7 +92,7 @@ const productController = {
         totalProducts: totalCount,
       });
     } catch (err) {
-      return res.status(400).json(err);
+      return res.status(400).json({ message: err.message });
     }
   },
 
