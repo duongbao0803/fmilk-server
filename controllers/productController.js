@@ -42,14 +42,14 @@ const productController = {
         }
       }
 
-      const cacheKey = `products:page:${page}:size:${pageSize}:name:${
+      const key = `products:page:${page}:size:${pageSize}:name:${
         name || ""
       }:origin:${origin || ""}:minPrice:${minPrice || ""}:maxPrice:${
         maxPrice || ""
       }`;
 
       try {
-        const cachedData = await getAsync(cacheKey);
+        const cachedData = await getAsync(key);
         if (cachedData) {
           return res.status(200).json(JSON.parse(cachedData));
         }
@@ -91,7 +91,7 @@ const productController = {
           totalProducts: totalCount,
         };
 
-        await setexAsync(cacheKey, 1500, JSON.stringify(response));
+        await setexAsync(key, 1500, JSON.stringify(response));
 
         return res.status(200).json(response);
       } catch (err) {
