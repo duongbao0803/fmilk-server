@@ -8,26 +8,19 @@ const Order = require("../models/order");
 const User = require("../models/user");
 const Product = require("../models/product");
 const sortObject = require("../utils/format");
+const { getAsync, setexAsync } = require("../config/redis");
 
 const orderController = {
   getAllOrder: async (req, res) => {
     try {
       let { page, pageSize, minPrice, maxPrice, status, paymentMethod } =
         req.query;
-
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
-      if (page <= 0) {
+      if (page <= 0 || pageSize <= 0) {
         return res.status(400).json({
-          message: "Số lượng trang phải là số dương",
-          status: 400,
-        });
-      }
-
-      if (pageSize <= 0) {
-        return res.status(400).json({
-          message: "Số lượng phần tử trong trang phải là số dương",
+          message: "Số lượng trang và phần tử phải là số dương",
           status: 400,
         });
       }
@@ -35,40 +28,55 @@ const orderController = {
       const skip = (page - 1) * pageSize;
 
       const filter = {};
-
       if (minPrice) {
         filter.totalPrice = { $gte: Number(minPrice) };
       }
-
       if (maxPrice) {
         filter.totalPrice = filter.totalPrice || {};
         filter.totalPrice.$lte = Number(maxPrice);
       }
-
       if (status) {
         filter.status = { $regex: new RegExp(status, "i") };
       }
-
       if (paymentMethod) {
         filter.paymentMethod = { $regex: new RegExp(paymentMethod, "i") };
       }
 
-      const orders = await Order.find(filter).skip(skip).limit(pageSize);
-      const totalCount = await Order.countDocuments(filter);
+      const key = `orders:page:${page}:size:${pageSize}:minPrice:${
+        minPrice || ""
+      }:maxPrice:${maxPrice || ""}:status:${status || ""}:paymentMethod:${
+        paymentMethod || ""
+      }`;
 
-      if (skip >= totalCount) {
-        return res.status(404).json({
-          message: "Không tìm thấy đơn hàng",
-          status: 404,
-        });
+      try {
+        const cachedData = await getAsync(key);
+        if (cachedData) {
+          return res.status(200).json(JSON.parse(cachedData));
+        }
+
+        const orders = await Order.find(filter).skip(skip).limit(pageSize);
+        const totalCount = await Order.countDocuments(filter);
+
+        if (totalCount === 0) {
+          return res.status(404).json({
+            message: "Không tìm thấy đơn hàng",
+            status: 404,
+          });
+        }
+
+        const response = {
+          orders,
+          currentPage: page,
+          totalPages: Math.ceil(totalCount / pageSize),
+          totalOrders: totalCount,
+        };
+
+        await setexAsync(key, 1800, JSON.stringify(response));
+
+        return res.status(200).json(response);
+      } catch (err) {
+        return res.status(400).json(err);
       }
-
-      return res.status(200).json({
-        orders,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / pageSize),
-        totalOrders: totalCount,
-      });
     } catch (err) {
       return res.status(400).json(err);
     }
