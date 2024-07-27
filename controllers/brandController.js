@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Brand = require("../models/brand");
 const Product = require("../models/product");
+const { getAsync, setexAsync } = require("../config/redis");
 
 const brandController = {
   getAllBrand: async (req, res) => {
@@ -10,45 +11,56 @@ const brandController = {
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
-      if (page <= 0) {
+      if (page <= 0 || pageSize <= 0) {
         return res.status(400).json({
-          message: "Số lượng trang phải là số dương",
-          status: 400,
-        });
-      }
-
-      if (pageSize <= 0) {
-        return res.status(400).json({
-          message: "Số lượng phần tử trong trang phải là số dương",
+          message: "Số lượng trang và phần tử phải là số dương",
           status: 400,
         });
       }
 
       const skip = (page - 1) * pageSize;
+
       let query = {};
       if (brandName) {
-        query.brandName = { $regex: brandName, $options: "i" };
+        query.brandName = { $regex: new RegExp(brandName, "i") };
       }
       if (origin) {
-        query.origin = { $regex: origin, $options: "i" };
+        query.origin = { $regex: new RegExp(origin, "i") };
       }
 
-      const brands = await Brand.find(query).skip(skip).limit(pageSize);
-      const totalCount = await Brand.countDocuments(query);
+      const key = `brands:page:${page}:size:${pageSize}:brandName:${
+        brandName || ""
+      }:origin:${origin || ""}`;
 
-      if (skip >= totalCount) {
-        return res.status(404).json({
-          message: "Không tìm thấy thương hiệu",
-          status: 404,
-        });
+      try {
+        const cachedData = await getAsync(key);
+        if (cachedData) {
+          return res.status(200).json(JSON.parse(cachedData));
+        }
+
+        const brands = await Brand.find(query).skip(skip).limit(pageSize);
+        const totalCount = await Brand.countDocuments(query);
+
+        if (totalCount === 0) {
+          return res.status(404).json({
+            message: "Không tìm thấy thương hiệu",
+            status: 404,
+          });
+        }
+
+        const response = {
+          brands,
+          currentPage: page,
+          totalPages: Math.ceil(totalCount / pageSize),
+          totalBrands: totalCount,
+        };
+
+        await setexAsync(key, 1500, JSON.stringify(response));
+
+        return res.status(200).json(response);
+      } catch (err) {
+        return res.status(400).json(err);
       }
-
-      return res.status(200).json({
-        brands,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / pageSize),
-        totalbrands: totalCount,
-      });
     } catch (err) {
       return res.status(400).json(err);
     }

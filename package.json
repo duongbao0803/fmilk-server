@@ -27,12 +27,14 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
     "qs": "^6.12.2",
-    "redis": "^4.6.15",
+    "redis": "3.1.2",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "unaccent": "^0.0.1",
     "uuid": "^10.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/redis": "^4.0.11"
+  }
 }

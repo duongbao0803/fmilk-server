@@ -10,7 +10,6 @@ const cron = require("node-cron");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
 const Product = require("./models/product");
-const redis = require("redis");
 
 dotenv.config();
 const app = express();
@@ -20,7 +19,6 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
-const client = redis.createClient();
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -32,15 +30,6 @@ mongoose
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
   });
-
-// redis
-client.on("connect", () => {
-  console.log("Connected to Redis");
-});
-
-client.on("error", (err) => {
-  console.log("Redis Client Error", err);
-});
 
 //Node-cron
 cron.schedule("0 0 * * *", async () => {

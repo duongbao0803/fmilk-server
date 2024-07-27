@@ -1,0 +1,22 @@
+const { promisify } = require("util");
+const redis = require("redis");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+});
+
+const getAsync = promisify(redisClient.get).bind(redisClient);
+const setexAsync = promisify(redisClient.setex).bind(redisClient);
+
+redisClient.on("connect", () => {
+  console.log("Connected to redis");
+});
+
+redisClient.on("error", (err) => {
+  console.error("Err", err);
+});
+
+module.exports = { redisClient, getAsync, setexAsync };
