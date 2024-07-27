@@ -5,6 +5,7 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const Brand = require("../models/brand");
 const Fuse = require("fuse.js");
+const { getAsync, setexAsync } = require("../config/redis");
 
 const productController = {
   getAllProduct: async (req, res) => {
@@ -13,16 +14,9 @@ const productController = {
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
-      if (page <= 0) {
+      if (page <= 0 || pageSize <= 0) {
         return res.status(400).json({
-          message: "Số lượng trang phải là số dương",
-          status: 400,
-        });
-      }
-
-      if (pageSize <= 0) {
-        return res.status(400).json({
-          message: "Số lượng phần tử trong trang phải là số dương",
+          message: "Số lượng trang và phần tử phải là số dương",
           status: 400,
         });
       }
@@ -48,50 +42,63 @@ const productController = {
         }
       }
 
-      const products = await Product.find(query)
-        .skip(skip)
-        .limit(pageSize)
-        .populate("brand");
+      const cacheKey = `products:page:${page}:size:${pageSize}:name:${
+        name || ""
+      }:origin:${origin || ""}:minPrice:${minPrice || ""}:maxPrice:${
+        maxPrice || ""
+      }`;
 
-      const totalCount = await Product.countDocuments(query);
+      try {
+        const cachedData = await getAsync(cacheKey);
+        if (cachedData) {
+          return res.status(200).json(JSON.parse(cachedData));
+        }
 
-      if (totalCount === 0) {
-        return res.status(404).json({
-          message: "Không tìm thấy sản phẩm",
-          status: 404,
-        });
-      }
+        const products = await Product.find(query)
+          .skip(skip)
+          .limit(pageSize)
+          .populate("brand");
 
-      if (name) {
-        const fuse = new Fuse(products, {
-          keys: ["name"],
-          threshold: 0.3,
-        });
-        const result = fuse.search(name).map((result) => result.item);
+        const totalCount = await Product.countDocuments(query);
 
-        if (result.length === 0) {
+        if (totalCount === 0) {
           return res.status(404).json({
             message: "Không tìm thấy sản phẩm",
             status: 404,
           });
         }
 
-        return res.status(200).json({
+        let result = products;
+        if (name) {
+          const fuse = new Fuse(products, {
+            keys: ["name"],
+            threshold: 0.3,
+          });
+          result = fuse.search(name).map((result) => result.item);
+
+          if (result.length === 0) {
+            return res.status(404).json({
+              message: "Không tìm thấy sản phẩm",
+              status: 404,
+            });
+          }
+        }
+
+        const response = {
           products: result,
           currentPage: page,
           totalPages: Math.ceil(result.length / pageSize),
-          totalProducts: result.length,
-        });
-      }
+          totalProducts: totalCount,
+        };
 
-      return res.status(200).json({
-        products,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / pageSize),
-        totalProducts: totalCount,
-      });
+        await setexAsync(cacheKey, 1500, JSON.stringify(response));
+
+        return res.status(200).json(response);
+      } catch (err) {
+        return res.status(400).json(err);
+      }
     } catch (err) {
-      return res.status(400).json({ message: err.message });
+      return res.status(400).json(err);
     }
   },
 
@@ -118,7 +125,6 @@ const productController = {
 
       res.status(200).json({ productInfo });
     } catch (err) {
-      console.log("check err", err);
       res.status(400).json(err);
     }
   },
@@ -285,7 +291,6 @@ const productController = {
         });
       }
     } catch (err) {
-      console.log("check err", err);
       return res.status(400).json(err);
     }
   },
@@ -293,7 +298,6 @@ const productController = {
   //Comments
   addNewComment: async (req, res) => {
     const { rating, content } = req.body;
-    console.log("check body", req.body);
 
     try {
       if (!ObjectId.isValid(req.params.productId)) {
@@ -304,7 +308,6 @@ const productController = {
       }
 
       const product = await Product.findById(req.params.productId);
-      console.log("checkl product", product);
       if (!product) {
         return res.status(404).json({
           message: "Không tìm thấy sản phẩm",

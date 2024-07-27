@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const { getAsync, setexAsync } = require("../config/redis");
 
 const userController = {
   getAllUser: async (req, res) => {
@@ -10,22 +11,14 @@ const userController = {
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
-      if (page <= 0) {
+      if (page <= 0 || pageSize <= 0) {
         return res.status(400).json({
-          message: "Số lượng trang phải là số dương",
-          status: 400,
-        });
-      }
-
-      if (pageSize <= 0) {
-        return res.status(400).json({
-          message: "Số lượng phần tử trong trang phải là số dương",
+          message: "Số lượng trang và phần tử phải là số dương",
           status: 400,
         });
       }
 
       const skip = (page - 1) * pageSize;
-
       const filter = {};
       if (name) {
         filter.name = { $regex: name, $options: "i" };
@@ -34,25 +27,43 @@ const userController = {
         filter.role = role;
       }
 
-      const users = await User.find(filter)
-        .select("username name email phone address status role dob")
-        .skip(skip)
-        .limit(pageSize);
-      const totalCount = await User.countDocuments(filter);
+      const key = `users:page:${page}:size:${pageSize}:name:${
+        name || ""
+      }:role:${role || ""}`;
 
-      if (skip >= totalCount) {
-        return res.status(404).json({
-          message: "Không tìm thấy người dùng",
-          status: 404,
-        });
+      try {
+        const cachedData = await getAsync(key);
+
+        if (cachedData) {
+          return res.status(200).json(JSON.parse(cachedData));
+        }
+
+        const users = await User.find(filter)
+          .select("username name email phone address status role dob")
+          .skip(skip)
+          .limit(pageSize);
+        const totalCount = await User.countDocuments(filter);
+
+        if (skip >= totalCount) {
+          return res.status(404).json({
+            message: "Không tìm thấy người dùng",
+            status: 404,
+          });
+        }
+
+        const result = {
+          users,
+          currentPage: page,
+          totalPages: Math.ceil(totalCount / pageSize),
+          totalUsers: totalCount,
+        };
+
+        await setexAsync(key, 1500, JSON.stringify(result));
+
+        return res.status(200).json(result);
+      } catch (err) {
+        return res.status(400).json(err);
       }
-
-      return res.status(200).json({
-        users,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / pageSize),
-        totalUsers: totalCount,
-      });
     } catch (err) {
       return res.status(400).json(err);
     }
@@ -147,8 +158,6 @@ const userController = {
     const date = new Date();
     const targetUser = await User.findById(id);
     const existingPhoneUser = await User.findOne({ phone });
-
-    console.log("check date", date);
 
     try {
       if (!ObjectId.isValid(req.params.id)) {

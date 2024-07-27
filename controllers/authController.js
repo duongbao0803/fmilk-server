@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid");
 const User = require("../models/user");
+const { getAsync, setexAsync } = require("../config/redis");
 
 dotenv.config();
 
@@ -11,12 +12,33 @@ const authController = {
   getInfoUser: async (req, res) => {
     try {
       const user = req.user;
-      const info = await User.findById(user.id).select(
-        "_id username phone dob address email role name"
-      );
-      res.json({ info });
+      const key = `user:${user.id}`;
+
+      try {
+        const cachedData = await getAsync(key);
+        if (cachedData) {
+          return res.json({ info: JSON.parse(cachedData) });
+        }
+
+        const info = await User.findById(user.id).select(
+          "_id username phone dob address email role name"
+        );
+
+        if (!info) {
+          return res.status(404).json({
+            message: "Người dùng không tồn tại",
+            status: 404,
+          });
+        }
+
+        await setexAsync(key, 1500, JSON.stringify(info));
+
+        return res.json({ info });
+      } catch (err) {
+        return res.status(400).json(err);
+      }
     } catch (err) {
-      res.status(400), json(err);
+      return res.status(400).json(err);
     }
   },
 

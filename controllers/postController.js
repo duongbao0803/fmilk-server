@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Post = require("../models/post");
-const Product = require("../models/product");
+const { getAsync, setexAsync } = require("../config/redis");
 
 const postController = {
   getAllPost: async (req, res) => {
@@ -10,16 +10,9 @@ const postController = {
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
-      if (page <= 0) {
+      if (page <= 0 || pageSize <= 0) {
         return res.status(400).json({
-          message: "Số lượng trang phải là số dương",
-          status: 400,
-        });
-      }
-
-      if (pageSize <= 0) {
-        return res.status(400).json({
-          message: "Số lượng phần tử trong trang phải là số dương",
+          message: "Số lượng trang và phần tử phải là số dương",
           status: 400,
         });
       }
@@ -27,27 +20,41 @@ const postController = {
       const skip = (page - 1) * pageSize;
 
       let query = {};
-
       if (title) {
         query.title = { $regex: new RegExp(title, "i") };
       }
 
-      const posts = await Post.find(query).skip(skip).limit(pageSize);
-      const totalCount = await Post.countDocuments(query);
+      const key = `posts:page:${page}:size:${pageSize}:title:${title || ""}`;
 
-      if (skip >= totalCount) {
-        return res.status(404).json({
-          message: "Không tìm thấy bài viết",
-          status: 404,
-        });
+      try {
+        const cachedData = await getAsync(key);
+        if (cachedData) {
+          return res.status(200).json(JSON.parse(cachedData));
+        }
+
+        const posts = await Post.find(query).skip(skip).limit(pageSize);
+        const totalCount = await Post.countDocuments(query);
+
+        if (totalCount === 0) {
+          return res.status(404).json({
+            message: "Không tìm thấy bài viết",
+            status: 404,
+          });
+        }
+
+        const response = {
+          posts,
+          currentPage: page,
+          totalPages: Math.ceil(totalCount / pageSize),
+          totalPosts: totalCount,
+        };
+
+        await setexAsync(key, 1800, JSON.stringify(response));
+
+        return res.status(200).json(response);
+      } catch (err) {
+        return res.status(400).json(err);
       }
-
-      return res.status(200).json({
-        posts,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / pageSize),
-        totalPosts: totalCount,
-      });
     } catch (err) {
       return res.status(400).json(err);
     }
