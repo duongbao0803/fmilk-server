@@ -156,12 +156,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "name",
@@ -269,7 +269,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "any"
+                  "example": "YYYY-MM-DD"
                 }
               }
             }
@@ -309,7 +309,7 @@
                   "example": "any"
                 },
                 "dob": {
-                  "example": "any"
+                  "example": "YYYY-MM-DD"
                 }
               }
             }
@@ -411,12 +411,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "name",
@@ -528,10 +528,10 @@
                   "example": "any"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 10000
                 },
                 "brand": {
                   "example": "any"
@@ -568,13 +568,13 @@
                   "example": "any"
                 },
                 "expireDate": {
-                  "example": "any"
+                  "example": "YYYY-MM-DD"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 },
                 "price": {
-                  "example": "any"
+                  "example": 100000
                 },
                 "image": {
                   "example": "any"
@@ -740,12 +740,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "brandName",
@@ -905,12 +905,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "title",
@@ -1085,12 +1085,12 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -1117,22 +1117,22 @@
           {
             "name": "page",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "pageSize",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "minPrice",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "maxPrice",
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "status",
@@ -1246,7 +1246,7 @@
                   "example": 10
                 },
                 "totalPrice": {
-                  "example": 10
+                  "example": 100000
                 }
               }
             }
