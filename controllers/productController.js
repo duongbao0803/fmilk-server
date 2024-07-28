@@ -54,29 +54,16 @@ const productController = {
           return res.status(200).json(JSON.parse(cachedData));
         }
 
-        const products = await Product.find(query)
-          .skip(skip)
-          .limit(pageSize)
-          .populate("brand");
+        let products = await Product.find(query).populate("brand");
 
-        const totalCount = await Product.countDocuments(query);
-
-        if (totalCount === 0) {
-          return res.status(404).json({
-            message: "Không tìm thấy sản phẩm",
-            status: 404,
-          });
-        }
-
-        let result = products;
         if (name) {
           const fuse = new Fuse(products, {
             keys: ["name"],
             threshold: 0.3,
           });
-          result = fuse.search(name).map((result) => result.item);
+          products = fuse.search(name).map((result) => result.item);
 
-          if (result.length === 0) {
+          if (products.length === 0) {
             return res.status(404).json({
               message: "Không tìm thấy sản phẩm",
               status: 404,
@@ -84,10 +71,13 @@ const productController = {
           }
         }
 
+        const totalCount = products.length;
+        const paginatedProducts = products.slice(skip, skip + pageSize);
+
         const response = {
-          products: result,
+          products: paginatedProducts,
           currentPage: page,
-          totalPages: Math.ceil(result.length / pageSize),
+          totalPages: Math.ceil(totalCount / pageSize),
           totalProducts: totalCount,
         };
 
