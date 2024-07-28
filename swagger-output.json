@@ -21,14 +21,10 @@
   "paths": {
     "/auth/infoUser": {
       "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
+        "tags": [
+          "Auth"
         ],
+        "description": "",
         "responses": {
           "200": {
             "description": "OK"
@@ -38,12 +34,18 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
     },
     "/auth/register": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -89,6 +91,9 @@
     },
     "/auth/login": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -125,6 +130,9 @@
     },
     "/auth/refresh": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -152,6 +160,9 @@
     },
     "/user/": {
       "get": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -185,14 +196,17 @@
           "403": {
             "description": "Forbidden"
           },
-          "500": {
-            "description": "Internal Server Error"
+          "404": {
+            "description": "Not Found"
           }
         }
       }
     },
     "/user/{id}": {
       "get": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -218,6 +232,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -243,6 +260,9 @@
         }
       },
       "put": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -288,13 +308,11 @@
     },
     "/user/personal-information": {
       "put": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -332,29 +350,25 @@
     },
     "/user/change-password": {
       "put": {
+        "tags": [
+          "User"
+        ],
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "oldPassword": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
-                }
+        "parameters": {
+          "name": "body",
+          "in": "body",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "oldPassword": {
+                "example": "any"
+              },
+              "newPassword": {
+                "example": "any"
               }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -373,6 +387,9 @@
     },
     "/user/status/{id}": {
       "patch": {
+        "tags": [
+          "User"
+        ],
         "description": "",
         "parameters": [
           {
@@ -412,6 +429,9 @@
     },
     "/product/": {
       "get": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -460,6 +480,9 @@
     },
     "/product/{id}": {
       "get": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -482,6 +505,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -507,6 +533,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -558,6 +587,9 @@
     },
     "/product/create": {
       "post": {
+        "tags": [
+          "Product"
+        ],
         "description": "",
         "parameters": [
           {
@@ -606,6 +638,9 @@
     },
     "/product/{productId}/comment": {
       "post": {
+        "tags": [
+          "Comment"
+        ],
         "description": "",
         "parameters": [
           {
@@ -648,6 +683,9 @@
     },
     "/product/{productId}/comment/{commentId}": {
       "delete": {
+        "tags": [
+          "Comment"
+        ],
         "description": "",
         "parameters": [
           {
@@ -660,11 +698,6 @@
             "name": "commentId",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           }
         ],
@@ -687,6 +720,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Comment"
+        ],
         "description": "",
         "parameters": [
           {
@@ -699,11 +735,6 @@
             "name": "commentId",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "type": "string"
           },
           {
@@ -743,6 +774,9 @@
     },
     "/brand/": {
       "get": {
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
           {
@@ -781,6 +815,9 @@
     },
     "/brand/{id}": {
       "get": {
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
           {
@@ -806,6 +843,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
           {
@@ -831,6 +871,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
           {
@@ -870,6 +913,9 @@
     },
     "/brand/create": {
       "post": {
+        "tags": [
+          "Brand"
+        ],
         "description": "",
         "parameters": [
           {
@@ -903,6 +949,9 @@
     },
     "/post/": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -936,6 +985,9 @@
     },
     "/post/{id}": {
       "get": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -958,6 +1010,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1001,6 +1056,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1028,6 +1086,9 @@
     },
     "/post/create": {
       "post": {
+        "tags": [
+          "Post"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1067,6 +1128,9 @@
     },
     "/order/vnpay_return": {
       "get": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -1077,6 +1141,9 @@
     },
     "/order/getByUser": {
       "get": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1108,6 +1175,9 @@
     },
     "/order/": {
       "get": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1159,6 +1229,9 @@
     },
     "/order/{id}": {
       "get": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
@@ -1186,44 +1259,64 @@
     },
     "/order/create": {
       "post": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "x-forwarded-for",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
+                "transferAddress": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "any"
+                    }
+                  }
+                },
                 "orderProducts": {
-                  "example": "any"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "example": 10
+                      },
+                      "productId": {
+                        "type": "string",
+                        "example": "any"
+                      }
+                    }
+                  }
                 },
                 "userId": {
-                  "example": "any"
+                  "example": null
                 },
                 "paymentMethod": {
                   "example": "any"
                 },
                 "itemsPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "transferPrice": {
-                  "example": "any"
+                  "example": 10
                 },
                 "totalPrice": {
-                  "example": "any"
-                },
-                "transferAddress": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }
@@ -1247,6 +1340,9 @@
     },
     "/order/{orderId}/status": {
       "put": {
+        "tags": [
+          "Order"
+        ],
         "description": "",
         "parameters": [
           {
