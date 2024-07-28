@@ -42,41 +42,28 @@ const productController = {
         }
       }
 
-      const cacheKey = `products:page:${page}:size:${pageSize}:name:${
+      const key = `products:page:${page}:size:${pageSize}:name:${
         name || ""
       }:origin:${origin || ""}:minPrice:${minPrice || ""}:maxPrice:${
         maxPrice || ""
       }`;
 
       try {
-        const cachedData = await getAsync(cacheKey);
+        const cachedData = await getAsync(key);
         if (cachedData) {
           return res.status(200).json(JSON.parse(cachedData));
         }
 
-        const products = await Product.find(query)
-          .skip(skip)
-          .limit(pageSize)
-          .populate("brand");
+        let products = await Product.find(query).populate("brand");
 
-        const totalCount = await Product.countDocuments(query);
-
-        if (totalCount === 0) {
-          return res.status(404).json({
-            message: "Không tìm thấy sản phẩm",
-            status: 404,
-          });
-        }
-
-        let result = products;
         if (name) {
           const fuse = new Fuse(products, {
             keys: ["name"],
             threshold: 0.3,
           });
-          result = fuse.search(name).map((result) => result.item);
+          products = fuse.search(name).map((result) => result.item);
 
-          if (result.length === 0) {
+          if (products.length === 0) {
             return res.status(404).json({
               message: "Không tìm thấy sản phẩm",
               status: 404,
@@ -84,14 +71,17 @@ const productController = {
           }
         }
 
+        const totalCount = products.length;
+        const paginatedProducts = products.slice(skip, skip + pageSize);
+
         const response = {
-          products: result,
+          products: paginatedProducts,
           currentPage: page,
-          totalPages: Math.ceil(result.length / pageSize),
+          totalPages: Math.ceil(totalCount / pageSize),
           totalProducts: totalCount,
         };
 
-        await setexAsync(cacheKey, 1500, JSON.stringify(response));
+        await setexAsync(key, 1500, JSON.stringify(response));
 
         return res.status(200).json(response);
       } catch (err) {
