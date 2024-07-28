@@ -3,7 +3,7 @@ const redis = require("redis");
 const dotenv = require("dotenv");
 
 dotenv.config();
-console.log("REDIS_URI:", process.env.REDIS_URI);
+console.log("Loaded", process.env);
 
 const redisClient = redis.createClient({
   url: process.env.REDIS_URI,
