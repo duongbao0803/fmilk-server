@@ -5,7 +5,7 @@
     "description": "API Documentation for FMilk Web",
     "version": "1.0.0"
   },
-  "host": "localhost:8000",
+  "host": "fmilk-server.onrender.com",
   "basePath": "/api/v1",
   "schemes": [
     "https"
