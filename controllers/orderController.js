@@ -362,7 +362,7 @@ const orderController = {
         ...vnp_Params,
         vnp_Amount: vnp_Amount / 100,
       };
-      const redirectUrl = `http://localhost:3000/payment?${querystring.stringify(
+      const redirectUrl = `https://fmilk.vercel.app/payment?${querystring.stringify(
         vnpay_Params_update
       )}`;
 
