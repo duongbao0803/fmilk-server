@@ -10,7 +10,7 @@ const { getAsync, setexAsync } = require("../config/redis");
 const productController = {
   getAllProduct: async (req, res) => {
     try {
-      let { page, pageSize, productName, origin, minPrice, maxPrice } = req.query;
+      let { page, pageSize, name, origin, minPrice, maxPrice } = req.query;
       page = parseInt(page) || 1;
       pageSize = parseInt(pageSize) || 10;
 
@@ -42,8 +42,8 @@ const productController = {
         }
       }
 
-      const key = `products:page:${page}:size:${pageSize}:productName:${
-        productName || ""
+      const key = `products:page:${page}:size:${pageSize}:name:${
+        name || ""
       }:origin:${origin || ""}:minPrice:${minPrice || ""}:maxPrice:${
         maxPrice || ""
       }`;
@@ -56,12 +56,12 @@ const productController = {
 
         let products = await Product.find(query).populate("brand");
 
-        if (productName) {
+        if (name) {
           const fuse = new Fuse(products, {
-            keys: ["productName"],
+            keys: ["name"],
             threshold: 0.3,
           });
-          products = fuse.search(productName).map((result) => result.item);
+          products = fuse.search(name).map((result) => result.item);
 
           if (products.length === 0) {
             return res.status(404).json({
