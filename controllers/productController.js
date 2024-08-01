@@ -42,8 +42,8 @@ const productController = {
         }
       }
 
-      const key = `products:page:${page}:size:${pageSize}:name:${
-        name || ""
+      const key = `products:page:${page}:size:${pageSize}:productName:${
+        productName || ""
       }:origin:${origin || ""}:minPrice:${minPrice || ""}:maxPrice:${
         maxPrice || ""
       }`;
