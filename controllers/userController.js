@@ -141,6 +141,12 @@ const userController = {
 
       if (user.status === false) {
         await User.findByIdAndDelete(req.params.id);
+        const pattern = "users:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
         return res.status(200).json({
           message: "Xóa thành công",
           status: 200,
@@ -230,6 +236,12 @@ const userController = {
         { new: true }
       );
       if (user) {
+        const pattern = "users:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
         return res.status(200).json({
           message: "Cập nhật thành công",
           status: 200,

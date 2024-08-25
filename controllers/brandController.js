@@ -2,7 +2,12 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Brand = require("../models/brand");
 const Product = require("../models/product");
-const { getAsync, setexAsync } = require("../config/redis");
+const {
+  getAsync,
+  setexAsync,
+  delAsync,
+  keysAsync,
+} = require("../config/redis");
 
 const brandController = {
   getAllBrand: async (req, res) => {
@@ -100,6 +105,12 @@ const brandController = {
       }
 
       const newBrand = await Brand.create(req.body);
+      const pattern = "brands:*";
+      const keys = await keysAsync(pattern);
+
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json({
         message: "Thêm thương hiệu mới thành công",
         status: 200,
@@ -138,7 +149,12 @@ const brandController = {
           status: 404,
         });
       }
+      const pattern = "brands:*";
+      const keys = await keysAsync(pattern);
 
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json({
         message: "Xóa thành công",
         status: 200,
@@ -175,6 +191,12 @@ const brandController = {
         { new: true }
       );
       if (brand) {
+        const pattern = "brands:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
         return res.status(200).json({
           message: "Cập nhật thành công",
           status: 200,

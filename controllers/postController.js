@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const Post = require("../models/post");
-const { getAsync, setexAsync } = require("../config/redis");
+const {
+  getAsync,
+  setexAsync,
+  keysAsync,
+  delAsync,
+} = require("../config/redis");
 
 const postController = {
   getAllPost: async (req, res) => {
@@ -107,7 +112,12 @@ const postController = {
         image,
         product,
       });
+      const pattern = "posts:*";
+      const keys = await keysAsync(pattern);
 
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json({
         message: "Thêm bài viết thành công",
         status: 200,
@@ -134,7 +144,12 @@ const postController = {
           status: 404,
         });
       }
+      const pattern = "posts:*";
+      const keys = await keysAsync(pattern);
 
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json({
         message: "Xóa bài viết thành công",
         status: 200,
@@ -173,6 +188,12 @@ const postController = {
         { new: true }
       );
       if (post) {
+        const pattern = "posts:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
         return res.status(200).json({
           message: "Cập nhật thành công",
           status: 200,

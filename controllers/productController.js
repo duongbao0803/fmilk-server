@@ -5,7 +5,12 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const Brand = require("../models/brand");
 const Fuse = require("fuse.js");
-const { getAsync, setexAsync } = require("../config/redis");
+const {
+  getAsync,
+  setexAsync,
+  delAsync,
+  keysAsync,
+} = require("../config/redis");
 
 const productController = {
   getAllProduct: async (req, res) => {
@@ -179,6 +184,12 @@ const productController = {
         description,
         brand,
       });
+      const pattern = "products:*";
+      const keys = await keysAsync(pattern);
+
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json(newProduct);
     } catch (err) {
       return res.status(400).json(err);
@@ -213,6 +224,12 @@ const productController = {
         });
       }
 
+      const pattern = "products:*";
+      const keys = await keysAsync(pattern);
+
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json({
         message: "Xóa thành công",
         status: 200,
@@ -270,6 +287,12 @@ const productController = {
         { new: true }
       );
       if (product) {
+        const pattern = "products:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
         return res.status(200).json({
           message: "Cập nhật thành công",
           status: 200,

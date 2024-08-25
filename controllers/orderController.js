@@ -8,7 +8,12 @@ const Order = require("../models/order");
 const User = require("../models/user");
 const Product = require("../models/product");
 const sortObject = require("../utils/format");
-const { getAsync, setexAsync } = require("../config/redis");
+const {
+  getAsync,
+  setexAsync,
+  delAsync,
+  keysAsync,
+} = require("../config/redis");
 
 const orderController = {
   getAllOrder: async (req, res) => {
@@ -322,6 +327,13 @@ const orderController = {
         vnp_Params["vnp_SecureHash"] = signed;
         vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
 
+        const pattern = "orders:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
+
         return res.status(200).json({
           data: vnpUrl,
           message:
@@ -329,6 +341,12 @@ const orderController = {
           status: 200,
         });
       } else {
+        const pattern = "orders:*";
+        const keys = await keysAsync(pattern);
+
+        if (keys.length > 0) {
+          await delAsync(keys);
+        }
         return res.status(200).json({
           message: "Tạo đơn hàng thành công. Chúng tôi sẽ liên lạc với bạn sớm",
           status: 200,
@@ -454,6 +472,12 @@ const orderController = {
       }
 
       await order.save();
+      const pattern = "orders:*";
+      const keys = await keysAsync(pattern);
+
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
 
       return res.json(order);
     } catch (error) {
