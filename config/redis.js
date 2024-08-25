@@ -10,6 +10,8 @@ const redisClient = redis.createClient({
 
 const getAsync = promisify(redisClient.get).bind(redisClient);
 const setexAsync = promisify(redisClient.setex).bind(redisClient);
+const delAsync = promisify(redisClient.del).bind(redisClient);
+const keysAsync = promisify(redisClient.keys).bind(redisClient);
 
 redisClient.on("connect", () => {
   console.log("Connected to redis");
@@ -19,4 +21,4 @@ redisClient.on("error", (err) => {
   console.error("Err", err);
 });
 
-module.exports = { redisClient, getAsync, setexAsync };
+module.exports = { redisClient, getAsync, setexAsync, delAsync, keysAsync };

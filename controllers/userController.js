@@ -271,7 +271,12 @@ const userController = {
           status: 404,
         });
       }
+      const pattern = "users:*";
+      const keys = await keysAsync(pattern);
 
+      if (keys.length > 0) {
+        await delAsync(keys);
+      }
       return res.status(200).json({
         message: "Cập nhật trạng thái thành công",
         status: 200,
